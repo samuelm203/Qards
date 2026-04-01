@@ -22,8 +22,6 @@ body {
 
 .card-inner.flipped { transform: rotateY(180deg); }
 
-/* Vorder- und Rückseite: Absolute Positionierung ist PFLICHT für den 3D-Flip.
-   Das innere Layout wird jetzt von Tailwind Flexbox gesteuert! */
 .card-front, .card-back {
     position: absolute;
     width: 100%;
