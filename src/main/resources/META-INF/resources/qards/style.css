@@ -52,7 +52,7 @@ body {
 }
 
 .btn-haptic { transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s; }
-.btn-haptic:active { transform: scale(0.93); }
+.btn-haptic:active { transform: scale(0.96); }
 #assessment-buttons.opacity-100 { pointer-events: auto; }
 
 /* SVG Icons sind standardmäßig versteckt, Emojis sichtbar */
@@ -61,76 +61,73 @@ body {
 
 
 /* ==========================================================
-   ENTERPRISE EDITION OVERRIDES (Strict B2B Design)
+   ENTERPRISE EDITION OVERRIDES (B2B Corporate Navy Design)
    ========================================================== */
 
 body.theme-enterprise {
-    background-color: #ffffff !important;
+    background-color: #f1f5f9 !important; /* Sehr zartes Hellgrau/Blau als Canvas */
     font-family: system-ui, -apple-system, Arial, sans-serif !important;
-    color: #111827 !important;
+    color: #0f172a !important; /* Tiefes Slate */
 }
 
 .theme-enterprise .emoji { display: none !important; }
 .theme-enterprise .enterprise-icon { display: inline-flex !important; align-items: center; justify-content: center; }
 
-/* Keine weichen Ecken mehr! Maximal 2px Radius */
-.theme-enterprise * { border-radius: 2px !important; }
+/* Scharfe Kanten für den echten SaaS-Look */
+.theme-enterprise * { border-radius: 4px !important; }
 
-/* Schatten und Verläufe killen */
+/* Weiche Schatten entfernen, dezente Rahmen-Schatten nutzen */
 .theme-enterprise .shadow-soft,
-.theme-enterprise .shadow-sm,
-.theme-enterprise .shadow-xl { box-shadow: none !important; }
+.theme-enterprise .shadow-xl { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important; }
 .theme-enterprise .bg-gradient-to-br { background: #ffffff !important; }
 
-/* Harte, dünne Rahmen statt "Chunky" Look */
+/* Feine, funktionale Rahmen (1px solid) */
 .theme-enterprise .border-2,
-.theme-enterprise .border-4 { border-width: 1px !important; border-color: #d1d5db !important; }
+.theme-enterprise .border-4 { border-width: 1px !important; border-color: #cbd5e1 !important; }
 .theme-enterprise .border-b-8,
 .theme-enterprise .border-b-4 { border-bottom-width: 1px !important; }
 
-/* Karten fixieren */
+/* Karten fixieren (Flach, weiss, feiner blauer Akzent-Rahmen) */
 .theme-enterprise .card-front,
-.theme-enterprise .card-back { border: 1px solid #d1d5db !important; background-color: #ffffff !important; }
+.theme-enterprise .card-back { border: 1px solid #94a3b8 !important; background-color: #ffffff !important; }
 
-/* Farben: Verspieltes Indigo/Violett wird zu striktem Schwarz/Grau */
+/* === NEU: CORPORATE NAVY BLAU (#1e3a8a) === */
 .theme-enterprise .bg-indigo-500,
 .theme-enterprise .bg-indigo-600,
-.theme-enterprise .bg-slate-100,
 .theme-enterprise .bg-violet-600 {
-    background-color: #000000 !important;
-    border-color: #000000 !important;
+    background-color: #1e3a8a !important;
+    border-color: #1e3a8a !important;
     color: #ffffff !important;
 }
+
 .theme-enterprise .text-indigo-500,
 .theme-enterprise .text-indigo-600,
 .theme-enterprise .text-indigo-800,
 .theme-enterprise .text-indigo-900,
-.theme-enterprise .text-indigo-950 { color: #000000 !important; }
+.theme-enterprise .text-indigo-950 { color: #1e3a8a !important; }
 
-/* Bunte Box-Hintergründe grau machen */
+/* Pastellige Boxen in sachliches, eisiges Hellblau verwandeln */
 .theme-enterprise .bg-indigo-50,
 .theme-enterprise .bg-teal-50,
 .theme-enterprise .bg-amber-50,
-.theme-enterprise .bg-slate-50,
-.theme-enterprise .bg-purple-50,
-.theme-enterprise .bg-slate-50\/30 {
-    background-color: #f9fafb !important;
-    border-color: #e5e7eb !important;
+.theme-enterprise .bg-purple-50 {
+    background-color: #f8fafc !important;
+    border-color: #e2e8f0 !important;
 }
 
 /* Action Buttons im Quiz (Weißer Hintergrund mit harten farbigen Rändern) */
 .theme-enterprise .bg-teal-400,
 .theme-enterprise .bg-teal-500 {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    border: 1px solid #000000 !important;
+    background-color: #f0fdf4 !important;
+    color: #166534 !important;
+    border: 1px solid #166534 !important;
 }
 .theme-enterprise .bg-rose-400,
 .theme-enterprise .bg-rose-500 {
-    background-color: #ffffff !important;
-    color: #111827 !important;
-    border: 1px solid #111827 !important;
+    background-color: #fff1f2 !important;
+    color: #9f1239 !important;
+    border: 1px solid #9f1239 !important;
 }
 
-/* Typografie-Anpassungen (weniger fett) */
+/* Typografie straffen */
 .theme-enterprise .font-black { font-weight: 700 !important; }
