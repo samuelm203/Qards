@@ -52,7 +52,7 @@
         <p id="error-text" class="text-sm"></p>
     </div>
 
-    <main class="flex-grow w-full max-w-6xl mx-auto px-4 md:px-8 py-8 flex flex-col">
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 md:px-8 py-6 flex flex-col">
 
         <div id="view-start" class="view-transition flex flex-col flex-grow w-full">
             <div class="flex flex-col sm:flex-row justify-between items-center mb-8 shrink-0 bg-white p-8 rounded-3xl shadow-sm border border-slate-100 gap-6">
@@ -72,72 +72,72 @@
             </div>
         </div>
 
-        <div id="view-deck-dashboard" class="hidden view-transition flex flex-col flex-grow w-full max-w-4xl mx-auto justify-center py-6">
-            <div class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-soft border-2 border-slate-100 flex-shrink-0">
+        <div id="view-deck-dashboard" class="hidden view-transition flex flex-col flex-grow w-full max-w-3xl mx-auto justify-center py-4">
+            <div class="bg-white rounded-[2rem] p-6 md:p-10 shadow-soft border-2 border-slate-100 flex-shrink-0">
 
-                <div class="mb-12 flex items-center gap-8 pb-8 border-b-2 border-slate-50">
-                    <button onclick="showView('view-start')" class="btn-haptic w-16 h-16 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600 shadow-sm transition-colors shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                <div class="mb-8 flex items-center gap-6 pb-6 border-b-2 border-slate-50">
+                    <button onclick="showView('view-start')" class="btn-haptic w-14 h-14 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600 shadow-sm transition-colors shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                     </button>
                     <div>
-                        <h2 id="dashboard-deck-title" class="text-3xl md:text-5xl font-black text-slate-800 leading-tight">Deck Name</h2>
-                        <p class="text-slate-500 font-bold mt-2 text-xl">Übersicht & Training</p>
+                        <h2 id="dashboard-deck-title" class="text-2xl md:text-4xl font-black text-slate-800 leading-tight">Deck Name</h2>
+                        <p class="text-slate-500 font-bold mt-1 text-lg">Übersicht & Training</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-12">
-                    <div class="bg-slate-50 border-2 border-slate-100 p-8 rounded-3xl flex items-center gap-6">
-                        <div class="bg-indigo-100 p-4 rounded-2xl flex items-center justify-center w-20 h-20 shrink-0">
-                            <span class="text-5xl emoji">🧠</span>
-                            <svg class="w-10 h-10 enterprise-icon text-indigo-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-slate-50 border-2 border-slate-100 p-6 rounded-3xl flex items-center gap-5">
+                        <div class="bg-indigo-100 p-3 rounded-2xl flex items-center justify-center w-16 h-16 shrink-0">
+                            <span class="text-4xl emoji">🧠</span>
+                            <svg class="w-8 h-8 enterprise-icon text-indigo-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                         </div>
                         <div>
-                            <span id="deck-stat-learned" class="text-5xl font-black text-slate-800 block">0</span>
-                            <span class="text-base font-bold text-slate-400 uppercase tracking-wider">Karten trainiert</span>
+                            <span id="deck-stat-learned" class="text-4xl font-black text-slate-800 block">0</span>
+                            <span class="text-sm font-bold text-slate-400 uppercase tracking-wider">Karten trainiert</span>
                         </div>
                     </div>
-                    <div class="bg-slate-50 border-2 border-slate-100 p-8 rounded-3xl flex items-center gap-6">
-                        <div class="bg-amber-100 p-4 rounded-2xl flex items-center justify-center w-20 h-20 shrink-0">
-                            <span class="text-5xl emoji">🏆</span>
-                            <svg class="w-10 h-10 enterprise-icon text-indigo-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <div class="bg-slate-50 border-2 border-slate-100 p-6 rounded-3xl flex items-center gap-5">
+                        <div class="bg-amber-100 p-3 rounded-2xl flex items-center justify-center w-16 h-16 shrink-0">
+                            <span class="text-4xl emoji">🏆</span>
+                            <svg class="w-8 h-8 enterprise-icon text-indigo-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </div>
                         <div>
-                            <span id="deck-stat-rate" class="text-5xl font-black text-amber-500 block">0%</span>
-                            <span class="text-base font-bold text-slate-400 uppercase tracking-wider">Erfolgsquote</span>
+                            <span id="deck-stat-rate" class="text-4xl font-black text-amber-500 block">0%</span>
+                            <span class="text-sm font-bold text-slate-400 uppercase tracking-wider">Erfolgsquote</span>
                         </div>
                     </div>
                 </div>
 
-                <h3 class="text-2xl font-black text-slate-800 mb-6 uppercase tracking-wider text-center sm:text-left">Training starten</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <button onclick="startTraining('strict')" class="btn-haptic w-full bg-white border-2 border-indigo-100 hover:border-indigo-400 p-8 rounded-[2rem] font-bold transition-all flex items-center gap-6 shadow-sm border-b-8 text-left group">
-                        <div class="bg-indigo-50 group-hover:bg-indigo-500 transition-colors p-5 rounded-3xl flex items-center justify-center shrink-0">
-                            <span class="text-5xl emoji">🃏</span>
-                            <svg class="w-12 h-12 enterprise-icon text-indigo-800 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
+                <h3 class="text-xl font-black text-slate-800 mb-4 uppercase tracking-wider text-center sm:text-left">Training starten</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <button onclick="startTraining('strict')" class="btn-haptic w-full bg-white border-2 border-indigo-100 hover:border-indigo-400 p-6 rounded-[1.5rem] font-bold transition-all flex items-center gap-5 shadow-sm border-b-8 text-left group">
+                        <div class="bg-indigo-50 group-hover:bg-indigo-500 transition-colors p-4 rounded-2xl flex items-center justify-center shrink-0">
+                            <span class="text-4xl emoji">🃏</span>
+                            <svg class="w-10 h-10 enterprise-icon text-indigo-800 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
                         </div>
                         <div>
-                            <div class="text-2xl font-black text-slate-800 group-hover:text-indigo-700 transition-colors">Ganzes Deck strikt</div>
-                            <div class="text-slate-500 font-semibold mt-2 text-lg">Lerne alle Karten der Reihe nach.</div>
+                            <div class="text-xl font-black text-slate-800 group-hover:text-indigo-700 transition-colors">Ganzes Deck strikt</div>
+                            <div class="text-slate-500 font-semibold mt-1 text-base">Lerne alle Karten der Reihe nach.</div>
                         </div>
                     </button>
 
-                    <button onclick="startTraining('random')" class="btn-haptic w-full bg-white border-2 border-teal-100 hover:border-teal-400 p-8 rounded-[2rem] font-bold transition-all flex items-center gap-6 shadow-sm border-b-8 text-left group">
-                        <div class="bg-teal-50 group-hover:bg-teal-500 transition-colors p-5 rounded-3xl flex items-center justify-center shrink-0">
-                            <span class="text-5xl emoji">🎲</span>
-                            <svg class="w-12 h-12 enterprise-icon text-indigo-800 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                    <button onclick="startTraining('random')" class="btn-haptic w-full bg-white border-2 border-teal-100 hover:border-teal-400 p-6 rounded-[1.5rem] font-bold transition-all flex items-center gap-5 shadow-sm border-b-8 text-left group">
+                        <div class="bg-teal-50 group-hover:bg-teal-500 transition-colors p-4 rounded-2xl flex items-center justify-center shrink-0">
+                            <span class="text-4xl emoji">🎲</span>
+                            <svg class="w-10 h-10 enterprise-icon text-indigo-800 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                         </div>
                         <div>
-                            <div class="text-2xl font-black text-slate-800 group-hover:text-teal-700 transition-colors">Zufälliger Mix</div>
-                            <div class="text-slate-500 font-semibold mt-2 text-lg">Endloses Training kreuz und quer.</div>
+                            <div class="text-xl font-black text-slate-800 group-hover:text-teal-700 transition-colors">Zufälliger Mix</div>
+                            <div class="text-slate-500 font-semibold mt-1 text-base">Endloses Training kreuz und quer.</div>
                         </div>
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="view-quiz" class="hidden view-transition flex-col h-full w-full max-w-3xl mx-auto justify-between pb-4">
+        <div id="view-quiz" class="hidden view-transition flex-col h-full w-full max-w-2xl mx-auto justify-between pb-4">
 
-            <div class="w-full flex items-center justify-between mb-4 bg-white p-3 rounded-full shadow-sm border-2 border-slate-100 shrink-0">
+            <div class="w-full flex items-center justify-between mb-4 bg-white p-2 rounded-full shadow-sm border-2 border-slate-100 shrink-0">
                 <button onclick="openDeckDashboard(currentActiveDeck)" class="btn-haptic w-12 h-12 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600 transition-colors shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                 </button>
@@ -148,54 +148,54 @@
                 <div class="w-12 shrink-0"></div>
             </div>
 
-            <div id="card-container" class="perspective-1000 w-full max-w-2xl min-h-[300px] max-h-[60vh] mx-auto flex-grow relative mb-6">
+            <div id="card-container" class="perspective-1000 w-full h-[400px] max-h-[50vh] mx-auto relative mb-6">
 
                 <div id="flashcard" class="card-inner w-full h-full" onclick="flipCard()">
 
-                    <div class="card-front hover:-translate-y-1 transition-transform flex flex-col justify-center items-center p-6 gap-4 w-full h-full">
+                    <div class="card-front hover:-translate-y-1 transition-transform flex flex-col justify-between items-center p-8 gap-6 w-full h-full">
                         <div class="flex justify-center shrink-0">
-                            <span class="text-4xl emoji">🤔</span>
-                            <svg class="w-10 h-10 enterprise-icon text-indigo-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span class="text-5xl emoji">🤔</span>
+                            <svg class="w-12 h-12 enterprise-icon text-indigo-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </div>
 
-                        <div class="flex-grow w-full flex items-center justify-center overflow-y-auto px-2">
-                            <h3 id="card-question" class="text-xl md:text-2xl font-black text-slate-800 text-center leading-tight">...</h3>
+                        <div class="flex-grow w-full flex items-center justify-center px-2">
+                            <h3 id="card-question" class="text-2xl md:text-3xl font-black text-slate-800 text-center leading-tight">...</h3>
                         </div>
 
-                        <div class="mt-auto bg-slate-100 text-slate-500 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 shrink-0">
-                            <span class="emoji text-lg">👆</span> Tippen zum Umdrehen
+                        <div class="bg-slate-100 text-slate-500 px-6 py-3 rounded-full text-sm font-bold flex items-center gap-2 shrink-0">
+                            <span class="emoji text-xl">👆</span> Tippen zum Umdrehen
                         </div>
                     </div>
 
-                    <div class="card-back flex flex-col justify-center items-center p-6 gap-4 w-full h-full">
+                    <div class="card-back flex flex-col justify-between items-center p-8 gap-6 w-full h-full">
                         <div class="flex justify-center shrink-0">
-                            <span class="text-4xl emoji">💡</span>
-                            <svg class="w-10 h-10 enterprise-icon text-indigo-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            <span class="text-5xl emoji">💡</span>
+                            <svg class="w-12 h-12 enterprise-icon text-indigo-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                         </div>
 
-                        <div class="flex-grow w-full flex items-center justify-center overflow-y-auto px-2">
-                            <h3 id="card-answer" class="text-lg md:text-xl font-bold text-indigo-900 text-center leading-tight">...</h3>
+                        <div class="flex-grow w-full flex items-center justify-center px-2">
+                            <h3 id="card-answer" class="text-xl md:text-2xl font-bold text-indigo-900 text-center leading-tight">...</h3>
                         </div>
 
-                        <p class="mt-auto text-sm text-indigo-400 font-bold opacity-70 shrink-0 text-center w-full">
+                        <p class="text-sm text-indigo-400 font-bold opacity-70 shrink-0 text-center w-full">
                             Bewerte unten deine Antwort...
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div id="assessment-buttons" class="w-full max-w-2xl mx-auto grid grid-cols-2 gap-4 opacity-0 pointer-events-none transition-all duration-300 shrink-0">
-                <button onclick="submitAssessment(false)" class="btn-haptic bg-rose-400 hover:bg-rose-500 text-white py-3 rounded-2xl font-black text-lg flex flex-col items-center justify-center gap-1 transition-colors border-b-4 border-rose-600 shadow-soft">
+            <div id="assessment-buttons" class="w-full grid grid-cols-2 gap-4 opacity-0 pointer-events-none transition-all duration-300 shrink-0">
+                <button onclick="submitAssessment(false)" class="btn-haptic bg-rose-400 hover:bg-rose-500 text-white py-5 rounded-3xl font-black text-xl flex flex-col items-center justify-center gap-2 transition-colors border-b-8 border-rose-600 shadow-soft">
                     <div class="flex items-center justify-center">
-                        <span class="text-2xl emoji">😅</span>
-                        <svg class="w-6 h-6 enterprise-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" /></svg>
+                        <span class="text-3xl emoji">😅</span>
+                        <svg class="w-8 h-8 enterprise-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" /></svg>
                     </div>
                     Wusste ich nicht
                 </button>
-                <button onclick="submitAssessment(true)" class="btn-haptic bg-teal-400 hover:bg-teal-500 text-white py-3 rounded-2xl font-black text-lg flex flex-col items-center justify-center gap-1 transition-colors border-b-4 border-teal-600 shadow-soft">
+                <button onclick="submitAssessment(true)" class="btn-haptic bg-teal-400 hover:bg-teal-500 text-white py-5 rounded-3xl font-black text-xl flex flex-col items-center justify-center gap-2 transition-colors border-b-8 border-teal-600 shadow-soft">
                     <div class="flex items-center justify-center">
-                        <span class="text-2xl emoji">🎉</span>
-                        <svg class="w-6 h-6 enterprise-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
+                        <span class="text-3xl emoji">🎉</span>
+                        <svg class="w-8 h-8 enterprise-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
                     </div>
                     Wusste ich!
                 </button>
