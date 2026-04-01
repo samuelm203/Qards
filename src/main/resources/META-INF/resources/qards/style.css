@@ -22,7 +22,8 @@ body {
 
 .card-inner.flipped { transform: rotateY(180deg); }
 
-/* Vorder- und Rückseite: Basis-Setup für unsere neue HTML-Flexbox */
+/* Vorder- und Rückseite: Absolute Positionierung ist PFLICHT für den 3D-Flip.
+   Das innere Layout wird jetzt von Tailwind Flexbox gesteuert! */
 .card-front, .card-back {
     position: absolute;
     width: 100%;
@@ -33,7 +34,7 @@ body {
     border: 3px solid #e2e8f0;
     border-bottom-width: 8px;
     background: #ffffff;
-    overflow: hidden; /* Verhindert, dass Inhalte über die runden Ecken ragen */
+    overflow: hidden;
 }
 
 .card-back {
