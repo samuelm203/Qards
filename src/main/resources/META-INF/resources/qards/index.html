@@ -3,264 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qards - Lernkarten</title>
-
-    <!-- Tailwind CSS via CDN -->
+    <title>Qards | Enterprise Flashcard Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- --- style.css --- -->
-    <style>
-        /* Basis-Styling und sanfte Übergänge */
-        body {
-            background-color: #f8fafc;
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
-
-        /* 3D-Flip-Effekt für die Karteikarten */
-        .perspective-1000 {
-            perspective: 1000px;
-        }
-
-        .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
-            transform-style: preserve-3d;
-            cursor: pointer;
-        }
-
-        /* Wenn die Klasse 'flipped' gesetzt ist, drehe die Karte */
-        .card-inner.flipped {
-            transform: rotateY(180deg);
-        }
-
-        /* Vorder- und Rückseite der Karte */
-        .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden; /* Für Safari */
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        .card-front {
-            background-color: #ffffff;
-            color: #1e293b;
-        }
-
-        /* Die Rückseite ist von Anfang an gedreht */
-        .card-back {
-            background-color: #eff6ff;
-            color: #1e40af;
-            transform: rotateY(180deg);
-            border: 2px solid #bfdbfe;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="text-slate-800 antialiased min-h-screen flex flex-col items-center py-10 px-4">
+<body class="antialiased min-h-screen">
 
-<!-- Header -->
-<header class="mb-10 text-center">
-    <h1 class="text-4xl font-extrabold text-blue-600 tracking-tight">Qards.</h1>
-    <p class="text-slate-500 mt-2">Dein smarter Karteikarten-Trainer</p>
-</header>
+<nav class="bg-white border-b border-slate-200 py-4 mb-8">
+    <div class="max-w-4xl mx-auto px-6 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center">
+                <span class="text-white font-bold text-lg">Q</span>
+            </div>
+            <h1 class="text-xl font-bold tracking-tight text-slate-800">Qards<span class="text-indigo-600">.</span></h1>
+        </div>
+        <div class="text-sm font-medium text-slate-500">Professional Edition</div>
+    </div>
+</nav>
 
-<!-- UI für Fehlermeldungen (statt alert) -->
-<div id="error-message" class="hidden fixed top-4 right-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-md z-50 transition-opacity">
-    <p id="error-text">Fehler aufgetreten.</p>
+<div id="error-message" class="hidden fixed bottom-6 right-6 bg-slate-900 text-white px-6 py-4 rounded-lg shadow-2xl z-50 flex items-center gap-3 border border-slate-700">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+    <p id="error-text" class="text-sm font-medium"></p>
 </div>
 
-<!-- Haupt-Container für die Views -->
-<main class="w-full max-w-2xl relative">
+<div id="modal-mode" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 view-transition">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+        <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+            <h3 class="font-bold text-lg text-slate-800" id="modal-deck-title">Deck Name</h3>
+            <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 btn-haptic">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+        <div class="p-6 space-y-4 bg-slate-50">
+            <button onclick="startTraining('random')" class="btn-haptic w-full bg-white border border-slate-200 hover:border-indigo-400 hover:shadow-md text-left p-5 rounded-xl transition-all flex items-center gap-4 group">
+                <div class="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                </div>
+                <div>
+                    <div class="font-bold text-slate-800">Zufällige Karte</div>
+                    <div class="text-xs text-slate-500 mt-1">Lerne endlos mit zufälligen Karten aus diesem Deck.</div>
+                </div>
+            </button>
+            <button onclick="startTraining('strict')" class="btn-haptic w-full bg-white border border-slate-200 hover:border-emerald-400 hover:shadow-md text-left p-5 rounded-xl transition-all flex items-center gap-4 group">
+                <div class="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                </div>
+                <div>
+                    <div class="font-bold text-slate-800">Ganzes Deck lernen</div>
+                    <div class="text-xs text-slate-500 mt-1">Gehe alle Karten in diesem Deck strikt nacheinander durch.</div>
+                </div>
+            </button>
+        </div>
+    </div>
+</div>
 
-    <!-- ==========================================
-         VIEW 1: STARTBILDSCHIRM
-         ========================================== -->
-    <div id="view-start" class="block animate-fade-in">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
-            <h2 class="text-xl font-bold mb-4">Verfügbare Decks</h2>
+<main class="max-w-4xl mx-auto px-6 pb-12">
 
-            <!-- Container für die dynamisch geladenen Decks -->
-            <div id="decks-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <p class="text-slate-400 text-sm italic col-span-full">Lade Decks vom Server...</p>
+    <div id="view-start" class="view-transition">
+
+        <div class="grid grid-cols-2 gap-4 mb-10">
+            <div class="bg-indigo-50 border border-indigo-100 p-6 rounded-2xl flex flex-col items-center justify-center shadow-sm">
+                <span id="stat-learned" class="text-4xl font-extrabold text-indigo-700">0</span>
+                <span class="text-xs font-bold text-indigo-400 uppercase tracking-widest mt-2">Karten Gelernt</span>
+            </div>
+            <div class="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl flex flex-col items-center justify-center shadow-sm">
+                <span id="stat-rate" class="text-4xl font-extrabold text-emerald-700">0%</span>
+                <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest mt-2">Erfolgsquote</span>
             </div>
         </div>
 
-        <button onclick="showView('view-create')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-colors flex justify-center items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-            </svg>
-            Neues Kartenset erstellen
-        </button>
-    </div>
-
-    <!-- ==========================================
-         VIEW 2: QUIZ-MODUS
-         ========================================== -->
-    <div id="view-quiz" class="hidden animate-fade-in">
-        <!-- Navigation -->
-        <div class="flex justify-between items-center mb-6">
-            <button onclick="showView('view-start')" class="text-slate-500 hover:text-slate-800 font-medium flex items-center gap-1 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
-                Zurück zur Übersicht
+        <div class="flex justify-between items-end mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-slate-900">Bibliothek</h2>
+            </div>
+            <button onclick="showView('view-create')" class="btn-haptic bg-slate-900 hover:bg-black text-white text-sm font-semibold py-2.5 px-5 rounded-lg transition-all flex items-center gap-2 shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                Neues Deck
             </button>
-            <span id="current-deck-title" class="font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-sm">Deck Name</span>
         </div>
 
-        <!-- Die 3D Karteikarte -->
-        <div class="perspective-1000 w-full h-80 mb-8 mx-auto">
+        <div id="decks-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        </div>
+    </div>
+
+    <div id="view-quiz" class="hidden view-transition flex flex-col items-center">
+        <div class="w-full max-w-xl flex items-center justify-between mb-8">
+            <button onclick="showView('view-start')" class="btn-haptic p-2 hover:bg-slate-200 rounded-full transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            </button>
+            <div class="text-center">
+                <span id="quiz-deck-title" class="text-xs font-bold text-indigo-600 uppercase tracking-widest">DECK NAME</span>
+                <div id="quiz-progress" class="text-sm text-slate-500 font-medium"></div>
+            </div>
+            <div class="w-9"></div> </div>
+
+        <div class="perspective-1000 w-full max-w-xl mx-auto h-[400px] mb-8">
             <div id="flashcard" class="card-inner" onclick="flipCard()">
-                <!-- Vorderseite (Frage) -->
-                <div class="card-front">
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Frage</span>
-                    <h3 id="card-question" class="text-2xl font-semibold text-center leading-snug">Lade Frage...</h3>
-                    <p class="text-sm text-slate-400 mt-6 animate-pulse">Klicke zum Umdrehen</p>
+                <div class="card-front shadow-sm hover:shadow-md transition-shadow">
+                    <div class="absolute top-6 left-6 text-[10px] font-bold text-slate-300 uppercase tracking-tighter">Frage</div>
+                    <h3 id="card-question" class="text-2xl font-medium text-slate-800 text-center">...</h3>
+                    <div class="mt-12 flex items-center gap-2 text-slate-400 text-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                        Klicken zum Umdrehen
+                    </div>
                 </div>
-                <!-- Rückseite (Antwort) -->
-                <div class="card-back">
-                    <span class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-4">Antwort</span>
-                    <h3 id="card-answer" class="text-xl font-medium text-center leading-snug">Lade Antwort...</h3>
+                <div class="card-back border-indigo-100 shadow-inner">
+                    <div class="absolute top-6 left-6 text-[10px] font-bold text-indigo-300 uppercase tracking-tighter">Antwort</div>
+                    <h3 id="card-answer" class="text-xl font-semibold text-indigo-900 text-center">...</h3>
                 </div>
             </div>
         </div>
 
-        <!-- Steuerung -->
-        <button onclick="loadRandomCard()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-colors">
-            Nächste zufällige Karte
-        </button>
+        <div id="assessment-buttons" class="w-full max-w-xl grid grid-cols-2 gap-4 opacity-0 pointer-events-none transition-opacity duration-300">
+            <button onclick="submitAssessment(false)" class="btn-haptic bg-red-100 hover:bg-red-200 text-red-700 border border-red-200 py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
+                Wusste ich nicht
+            </button>
+            <button onclick="submitAssessment(true)" class="btn-haptic bg-emerald-500 hover:bg-emerald-600 text-white border border-emerald-600 py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                Wusste ich
+            </button>
+        </div>
     </div>
 
-    <!-- ==========================================
-         VIEW 3: ERSTELL-ANSICHT
-         ========================================== -->
-    <div id="view-create" class="hidden animate-fade-in">
-        <div class="flex items-center mb-6">
-            <button onclick="showView('view-start')" class="text-slate-500 hover:text-slate-800 font-medium flex items-center gap-1 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
-                Abbrechen
-            </button>
-        </div>
-
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-            <h2 class="text-2xl font-bold mb-6">Neues Deck erstellen</h2>
-
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-slate-700 mb-2">Name des Decks</label>
-                <input type="text" id="input-deck-name" placeholder="z.B. Java Grundlagen" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+    <div id="view-create" class="hidden view-transition">
+        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <div class="p-6 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-slate-900">Deck-Editor</h2>
+                <button onclick="showView('view-start')" class="btn-haptic text-slate-500 hover:text-slate-700 text-sm font-medium">Verwerfen</button>
             </div>
 
-            <div class="border-t border-slate-200 pt-6 mb-2">
-                <h3 class="text-lg font-semibold mb-4 text-slate-700">Karten hinzufügen</h3>
-
-                <!-- Container für dynamische Frage/Antwort Paare -->
-                <div id="qa-container" class="space-y-4 mb-4">
-                    <!-- Ein initiales leeres Paar -->
+            <div class="p-8">
+                <div class="mb-10">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Bezeichnung des Sets</label>
+                    <input type="text" id="input-deck-name" placeholder="z.B. IT-Infrastruktur 2024" class="w-full bg-slate-50 px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-medium">
                 </div>
 
-                <button onclick="addQaField()" class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center gap-1 py-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
-                    Weiteres Paar hinzufügen
-                </button>
-            </div>
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-tight">Karten-Inhalte</h3>
+                        <button onclick="addQaField()" class="btn-haptic text-indigo-600 hover:text-indigo-800 text-xs font-bold flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                            ZEILE HINZUFÜGEN
+                        </button>
+                    </div>
 
-            <button onclick="saveDeck()" class="w-full mt-8 bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-colors">
-                Deck speichern
-            </button>
+                    <div id="qa-container" class="space-y-3"></div>
+                </div>
+
+                <div class="mt-12 pt-8 border-t border-slate-100">
+                    <button onclick="saveDeck()" class="btn-haptic w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-lg shadow-lg shadow-indigo-200 transition-all">
+                        Konfiguration Speichern
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
 </main>
-
-<!-- --- app.js --- -->
-<script>
-    const API_BASE_URL = '/api/decks';
-    let currentActiveDeck = null;
-
-    function showView(viewId) {
-        document.querySelectorAll('main > div').forEach(div => div.classList.add('hidden'));
-        document.getElementById(viewId).classList.remove('hidden');
-        if(viewId === 'view-start') loadDecks();
-    }
-
-    async function loadDecks() {
-        const container = document.getElementById('decks-container');
-        try {
-            const response = await fetch(API_BASE_URL);
-            const decks = await response.json();
-            container.innerHTML = '';
-            decks.forEach(name => {
-                const btn = document.createElement('button');
-                btn.className = 'bg-white p-5 rounded-xl border border-slate-200 hover:shadow-md text-left';
-                btn.innerHTML = `<span class="font-semibold">${name}</span>`;
-                btn.onclick = () => {
-                    currentActiveDeck = name;
-                    document.getElementById('current-deck-title').innerText = name;
-                    showView('view-quiz');
-                    loadRandomCard();
-                };
-                container.appendChild(btn);
-            });
-        } catch (e) { console.error("Load failed", e); }
-    }
-
-    async function loadRandomCard() {
-        if (!currentActiveDeck) return;
-        try {
-            const res = await fetch(`${API_BASE_URL}/${encodeURIComponent(currentActiveDeck)}/random`);
-            const card = await res.json();
-            document.getElementById('card-question').innerText = card.question;
-            document.getElementById('card-answer').innerText = card.answer;
-            document.getElementById('flashcard').classList.remove('flipped');
-        } catch (e) { console.error("Card failed", e); }
-    }
-
-    function addQaField() {
-        const div = document.createElement('div');
-        div.className = 'qa-pair bg-slate-50 p-4 rounded-xl border mb-2';
-        div.innerHTML = `
-            <input type="text" class="input-q w-full mb-2 p-2 border rounded" placeholder="Frage">
-            <input type="text" class="input-a w-full p-2 border rounded" placeholder="Antwort">`;
-        document.getElementById('qa-container').appendChild(div);
-    }
-
-    async function saveDeck() {
-        const name = document.getElementById('input-deck-name').value.trim();
-        if (!name) return alert("Name fehlt");
-
-        const cards = [];
-        document.querySelectorAll('.qa-pair').forEach(p => {
-            const q = p.querySelector('.input-q').value.trim();
-            const a = p.querySelector('.input-a').value.trim();
-            if(q && a) cards.push({ deckName: name, question: q, answer: a });
-        });
-
-        const res = await fetch(`${API_BASE_URL}/${encodeURIComponent(name)}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(cards)
-        });
-
-        if(res.ok) {
-            document.getElementById('input-deck-name').value = '';
-            document.getElementById('qa-container').innerHTML = '';
-            addQaField();
-            showView('view-start');
-        }
-    }
-
-    function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
-
-    addQaField();
-    loadDecks();
-</script>
+<script src="app.js"></script>
 </body>
 </html>
