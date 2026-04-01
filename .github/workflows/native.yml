@@ -20,7 +20,7 @@ jobs:
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '21' # Quarkus 3.34.1 supports Java 21+ for native. Maven 25 might be too new for stable GraalVM GH Action support in some regions or versions, but let's try to match Java 25 if possible or use a stable one.
+          java-version: '25' # Quarkus 3.34.1 supports Java 21+ for native. Maven 25 might be too new for stable GraalVM GH Action support in some regions or versions, but let's try to match Java 25 if possible or use a stable one.
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           cache: 'maven'
