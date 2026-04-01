@@ -1,4 +1,4 @@
-package org.acme; // <-- Wichtig: Hier org.acme eintragen!
+package org.acme;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -8,20 +8,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-
-// WICHTIG: Die Zeile "import org.qards.model.Qard;" muss GELÖSCHT werden!
+import java.util.concurrent.atomic.AtomicInteger;
 
 @ApplicationScoped
 public class QardService {
 
-    // Thread-sicherer In-Memory Cache: Der Key ist der deckName, der Value die Liste der Karten.
+    // Thread-sicherer In-Memory Cache für die Karten
     private final Map<String, List<Qard>> cache = new ConcurrentHashMap<>();
     private final Random random = new Random();
 
-    /**
-     * @PostConstruct signalisiert, dass diese Methode ausgeführt werden soll,
-     * sobald Quarkus den Service erfolgreich instanziiert hat.
-     */
+    // Thread-sichere Zähler für die Statistiken (da REST-Requests parallel ankommen können)
+    private final AtomicInteger totalLearned = new AtomicInteger(0);
+    private final AtomicInteger totalCorrect = new AtomicInteger(0);
+
     @PostConstruct
     void init() {
         String deckName = "Webentwicklung";
@@ -30,41 +29,53 @@ public class QardService {
                 new Qard(null, deckName, "Wofür wird CSS verwendet?", "Für das Styling und Layout einer Webseite (Cascading Style Sheets)."),
                 new Qard(null, deckName, "Was ist das DOM?", "Document Object Model – eine Schnittstelle, um HTML-Strukturen mit Programmiersprachen wie JavaScript zu verändern.")
         );
-
-        // Da List.of() eine unveränderliche Liste zurückgibt, wrappen wir sie in eine ArrayList,
-        // damit später im POST-Request weitere Karten hinzugefügt werden können.
         cache.put(deckName, new ArrayList<>(initialQards));
     }
 
-    /**
-     * Speichert eine neue Liste von Karten in einem Deck ab.
-     * Existiert das Deck noch nicht, wird es automatisch angelegt.
-     */
     public void addQards(String deckName, List<Qard> newQards) {
-        // computeIfAbsent prüft, ob der deckName schon existiert. Wenn nicht, wird eine neue ArrayList erstellt.
-        // Anschließend werden die neuen Karten (newQards) dieser Liste hinzugefügt.
         cache.computeIfAbsent(deckName, k -> new ArrayList<>()).addAll(newQards);
     }
 
-    /**
-     * Gibt eine Liste aller aktuell im Cache befindlichen Deck-Namen zurück.
-     */
     public List<String> getAllDeckNames() {
         return new ArrayList<>(cache.keySet());
     }
 
-    /**
-     * Wählt eine zufällige Karte aus dem spezifizierten Deck aus.
-     */
     public Qard getRandomQard(String deckName) {
         List<Qard> qardsInDeck = cache.get(deckName);
-
-        // Sicherheits-Check: Gibt es das Deck überhaupt und enthält es Karten?
         if (qardsInDeck == null || qardsInDeck.isEmpty()) {
             return null;
         }
-
         int randomIndex = random.nextInt(qardsInDeck.size());
         return qardsInDeck.get(randomIndex);
     }
+
+    // --- NEUE FUNKTIONEN ---
+
+    /**
+     * Gibt die komplette Liste aller Karten eines Decks zurück.
+     */
+    public List<Qard> getAllQards(String deckName) {
+        // Gibt die Liste zurück oder eine leere Liste, falls das Deck nicht existiert
+        return cache.getOrDefault(deckName, new ArrayList<>());
+    }
+
+    /**
+     * Aktualisiert die Lern-Statistiken.
+     */
+    public void updateStats(boolean wussteIch) {
+        totalLearned.incrementAndGet(); // Karte wurde gelernt (Zähler + 1)
+        if (wussteIch) {
+            totalCorrect.incrementAndGet(); // Karte war richtig (Zähler + 1)
+        }
+    }
+
+    /**
+     * Gibt die aktuellen Statistiken als praktisches Record zurück.
+     */
+    public StatResult getStats() {
+        return new StatResult(totalLearned.get(), totalCorrect.get());
+    }
+
+    // Ein kleines Record, das von Quarkus/Jackson automatisch in JSON umgewandelt wird
+    public record StatResult(int totalLearned, int totalCorrect) {}
 }
