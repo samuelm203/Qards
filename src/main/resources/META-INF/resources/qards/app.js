@@ -2,6 +2,7 @@ const API_BASE_URL = '/api';
 
 // State-Management
 let currentActiveDeck = null;
+let currentCardId = null;
 let currentMode = null; // 'random' oder 'strict'
 let strictDeckQueue = [];
 let totalCardsInStrict = 0;
@@ -171,11 +172,13 @@ async function loadNextCard() {
                 }
                 document.getElementById('quiz-progress').innerText = `Karte ${totalCardsInStrict - strictDeckQueue.length + 1} von ${totalCardsInStrict}`;
                 const card = strictDeckQueue.shift();
+                currentCardId = card.id;
                 q.innerText = card.question;
                 a.innerText = card.answer;
             } else {
                 const res = await fetch(`${API_BASE_URL}/decks/${encodeURIComponent(currentActiveDeck)}/random`);
                 const card = await res.json();
+                currentCardId = card.id;
                 q.innerText = card.question;
                 a.innerText = card.answer;
             }
@@ -207,7 +210,7 @@ async function submitAssessment(knewIt) {
         await fetch(`${API_BASE_URL}/decks/${encodeURIComponent(currentActiveDeck)}/stats`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ wussteIch: knewIt })
+            body: JSON.stringify({ cardId: currentCardId, wussteIch: knewIt })
         });
         loadNextCard();
     } catch (e) {

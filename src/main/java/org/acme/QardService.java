@@ -61,10 +61,10 @@ public class QardService {
     /**
      * Aktualisiert die Lern-Statistiken für ein spezifisches Deck.
      */
-    public void updateStats(String deckName, boolean wussteIch) {
+    public void updateStats(String deckName, String cardId, boolean wussteIch) {
         DeckStats stats = statsCache.get(deckName);
         if (stats != null) {
-            stats.recordAnswer(wussteIch);
+            stats.recordAnswer(cardId, wussteIch);
         }
     }
 
@@ -81,24 +81,28 @@ public class QardService {
     }
 
     // Ein Record, das von Quarkus/Jackson in JSON umgewandelt wird
-    public record StatResult(int totalLearned, int totalCorrect) {}
+    public record StatResult(int totalLearned, int totalCorrect, int totalAnswers, int totalCorrectAnswers) {}
 
     /**
      * Interne Hilfsklasse, um die Zähler für ein Deck Thread-sicher zu verwalten.
      */
     private static class DeckStats {
-        private final AtomicInteger totalLearned = new AtomicInteger(0);
-        private final AtomicInteger totalCorrect = new AtomicInteger(0);
+        private final Map<String, Boolean> cardResults = new ConcurrentHashMap<>();
+        private final AtomicInteger totalAnswers = new AtomicInteger(0);
+        private final AtomicInteger totalCorrectAnswers = new AtomicInteger(0);
 
-        public void recordAnswer(boolean correct) {
-            totalLearned.incrementAndGet();
+        public void recordAnswer(String cardId, boolean correct) {
+            cardResults.put(cardId, correct);
+            totalAnswers.incrementAndGet();
             if (correct) {
-                totalCorrect.incrementAndGet();
+                totalCorrectAnswers.incrementAndGet();
             }
         }
 
         public StatResult toResult() {
-            return new StatResult(totalLearned.get(), totalCorrect.get());
+            int totalLearned = cardResults.size();
+            int totalCorrect = (int) cardResults.values().stream().filter(Boolean::booleanValue).count();
+            return new StatResult(totalLearned, totalCorrect, totalAnswers.get(), totalCorrectAnswers.get());
         }
     }
 }

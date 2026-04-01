@@ -81,7 +81,7 @@ public class QardResource {
                     .build();
         }
 
-        qardService.updateStats(deckName, request.wussteIch());
+        qardService.updateStats(deckName, request.cardId(), request.wussteIch());
 
         // HTTP 200 OK (Erfolg reicht, wir senden keinen Body zurück)
         return Response.ok().build();
@@ -102,5 +102,5 @@ public class QardResource {
     }
 
     // Ein Record, das genau der erwarteten JSON-Struktur des Frontends entspricht: {"wussteIch": true/false}
-    public record StatRequest(boolean wussteIch) {}
+    public record StatRequest(String cardId, boolean wussteIch) {}
 }
