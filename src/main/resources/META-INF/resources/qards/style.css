@@ -1,37 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
 body {
-    background-color: #f8fafc; /* Ein sehr sanftes, neutrales Hellblau/Grau */
+    background-color: #f8fafc;
     font-family: 'Nunito', sans-serif;
     color: #334155;
+    transition: background-color 0.3s;
 }
 
-/* Eigener, sehr weicher Schatten für das moderne Feel */
-.shadow-soft {
-    box-shadow: 0 12px 35px -10px rgba(99, 102, 241, 0.15);
-}
-
-/* 3D-Flip-Effekt */
-.perspective-1000 {
-    perspective: 1000px;
-}
+.shadow-soft { box-shadow: 0 12px 35px -10px rgba(99, 102, 241, 0.15); }
+.perspective-1000 { perspective: 1000px; }
 
 .card-inner {
     position: relative;
     width: 100%;
     height: 100%;
     text-align: center;
-    /* Ein leichter 'Bouncy' Effekt beim Drehen der Karte */
     transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     transform-style: preserve-3d;
     cursor: pointer;
 }
 
-.card-inner.flipped {
-    transform: rotateY(180deg);
-}
+.card-inner.flipped { transform: rotateY(180deg); }
 
-/* Vorder- und Rückseite der Karte */
 .card-front, .card-back {
     position: absolute;
     width: 100%;
@@ -43,40 +33,120 @@ body {
     align-items: center;
     justify-content: center;
     padding: 2.5rem;
-    border-radius: 2rem; /* Extrem abgerundet */
-
-    /* Playful "Chunky" Look (Duolingo Style) */
+    border-radius: 2rem;
     border: 3px solid #e2e8f0;
     border-bottom-width: 8px;
     background: #ffffff;
 }
 
 .card-back {
-    background-color: #fdf8f6; /* Sanfter, warmer Ton für die Lösung */
+    background-color: #fdf8f6;
     border-color: #f1f5f9;
     transform: rotateY(180deg);
 }
 
-/* Sanfte View-Wechsel */
-.view-transition {
-    animation: fadeIn 0.4s ease-out;
-}
-
+.view-transition { animation: fadeIn 0.4s ease-out; }
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Haptisches visuelles Feedback beim Klicken */
-.btn-haptic {
-    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s;
+.btn-haptic { transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s; }
+.btn-haptic:active { transform: scale(0.93); }
+#assessment-buttons.opacity-100 { pointer-events: auto; }
+
+/* SVG Icons sind standardmäßig versteckt, Emojis sichtbar */
+.enterprise-icon { display: none; }
+.emoji { display: inline-block; }
+
+
+/* ==========================================================
+   ENTERPRISE EDITION OVERRIDES (Strict B2B Design)
+   ========================================================== */
+
+body.theme-enterprise {
+    background-color: #ffffff !important;
+    font-family: system-ui, -apple-system, Arial, sans-serif !important; /* Strenge System-Schriftart */
+    color: #111827 !important; /* Sehr dunkles Grau/Schwarz */
 }
 
-.btn-haptic:active {
-    transform: scale(0.93); /* Etwas stärkerer Eindrück-Effekt */
+/* Emojis ausblenden, strenge Icons einblenden */
+.theme-enterprise .emoji { display: none !important; }
+.theme-enterprise .enterprise-icon { display: inline-flex !important; align-items: center; justify-content: center; }
+
+/* Keine weichen Ecken mehr! Maximal 2px Radius */
+.theme-enterprise * {
+    border-radius: 2px !important;
 }
 
-/* Macht die Assessment-Buttons klickbar, wenn sie sichtbar sind */
-#assessment-buttons.opacity-100 {
-    pointer-events: auto;
+/* Schatten und Verläufe killen */
+.theme-enterprise .shadow-soft,
+.theme-enterprise .shadow-sm,
+.theme-enterprise .shadow-xl {
+    box-shadow: none !important;
 }
+.theme-enterprise .bg-gradient-to-br {
+    background: #ffffff !important;
+}
+
+/* Harte, dünne Rahmen statt "Chunky" Look */
+.theme-enterprise .border-2,
+.theme-enterprise .border-4 {
+    border-width: 1px !important;
+    border-color: #d1d5db !important; /* gray-300 */
+}
+.theme-enterprise .border-b-8,
+.theme-enterprise .border-b-4 {
+    border-bottom-width: 1px !important;
+}
+
+/* Karten fixieren */
+.theme-enterprise .card-front,
+.theme-enterprise .card-back {
+    border: 1px solid #d1d5db !important;
+    background-color: #ffffff !important;
+}
+
+/* Farben: Verspieltes Indigo/Violett wird zu striktem Schwarz/Grau */
+.theme-enterprise .bg-indigo-500,
+.theme-enterprise .bg-indigo-600,
+.theme-enterprise .bg-slate-100,
+.theme-enterprise .bg-violet-600 {
+    background-color: #000000 !important;
+    border-color: #000000 !important;
+    color: #ffffff !important;
+}
+.theme-enterprise .text-indigo-500,
+.theme-enterprise .text-indigo-600,
+.theme-enterprise .text-indigo-800,
+.theme-enterprise .text-indigo-900,
+.theme-enterprise .text-indigo-950 {
+    color: #000000 !important;
+}
+
+/* Bunte Box-Hintergründe grau machen */
+.theme-enterprise .bg-indigo-50,
+.theme-enterprise .bg-teal-50,
+.theme-enterprise .bg-amber-50,
+.theme-enterprise .bg-slate-50,
+.theme-enterprise .bg-purple-50 {
+    background-color: #f9fafb !important;
+    border-color: #e5e7eb !important;
+}
+
+/* Action Buttons im Quiz (Weißer Hintergrund mit harten farbigen Rändern) */
+.theme-enterprise .bg-teal-400,
+.theme-enterprise .bg-teal-500 {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #000000 !important;
+}
+.theme-enterprise .bg-rose-400,
+.theme-enterprise .bg-rose-500 {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+    border: 1px solid #111827 !important;
+}
+
+/* Typografie-Anpassungen (weniger fett) */
+.theme-enterprise .font-black { font-weight: 700 !important; }

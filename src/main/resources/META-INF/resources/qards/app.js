@@ -1,3 +1,45 @@
+// --- THEME MANAGEMENT ---
+function initTheme() {
+    const savedTheme = localStorage.getItem('qards_theme');
+    if (!savedTheme) {
+        // Kein Theme gewählt -> Zeige Onboarding, verstecke App
+        document.getElementById('view-onboarding').classList.remove('hidden');
+        document.getElementById('app-wrapper').classList.add('hidden');
+    } else {
+        // Theme anwenden und App anzeigen
+        applyTheme(savedTheme);
+        document.getElementById('view-onboarding').classList.add('hidden');
+        document.getElementById('app-wrapper').classList.remove('hidden');
+    }
+}
+
+function applyTheme(theme) {
+    if (theme === 'enterprise') {
+        document.body.classList.add('theme-enterprise');
+        document.getElementById('theme-toggle-text').innerText = 'Playful Edition';
+    } else {
+        document.body.classList.remove('theme-enterprise');
+        document.getElementById('theme-toggle-text').innerText = 'Enterprise Edition';
+    }
+    localStorage.setItem('qards_theme', theme);
+}
+
+function setTheme(theme) {
+    applyTheme(theme);
+    document.getElementById('view-onboarding').classList.add('hidden');
+    document.getElementById('app-wrapper').classList.remove('hidden');
+    // Startet die Standard-Initialisierung der App (Statistiken laden etc.)
+}
+
+function toggleTheme() {
+    const current = localStorage.getItem('qards_theme') || 'playful';
+    applyTheme(current === 'playful' ? 'enterprise' : 'playful');
+}
+
+// Starte das Theme Management sofort
+initTheme();
+
+// ==========================================
 const API_BASE_URL = '/api';
 
 // State-Management
