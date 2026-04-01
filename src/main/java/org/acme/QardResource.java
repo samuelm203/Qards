@@ -7,7 +7,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 
-@Path("/api") // Basis-Pfad auf /api gekürzt, damit wir /decks und /stats bündeln können
+@Path("/api")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class QardResource {
@@ -50,7 +50,6 @@ public class QardResource {
         return Response.ok(randomQard).build();
     }
 
-    // --- NEUER ENDPUNKT: Alle Karten ---
     @GET
     @Path("/decks/{deckName}/all")
     public Response getAllQardsFromDeck(@PathParam("deckName") String deckName) {
@@ -61,33 +60,45 @@ public class QardResource {
                     .entity("{\"error\": \"Deck '" + deckName + "' wurde nicht gefunden oder ist leer.\"}")
                     .build();
         }
-        // Gibt das komplette JSON-Array zurück
         return Response.ok(allQards).build();
     }
 
     // ==========================================
-    // STATISTIK ENDPUNKTE (/api/stats)
+    // STATISTIK ENDPUNKTE PRO DECK
     // ==========================================
 
-    // --- NEUER ENDPUNKT: Statistik aktualisieren ---
     @POST
-    @Path("/stats")
-    public Response updateStats(StatRequest request) {
+    @Path("/decks/{deckName}/stats")
+    public Response updateDeckStats(@PathParam("deckName") String deckName, StatRequest request) {
         if (request == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        qardService.updateStats(request.wussteIch());
+        // Checken, ob das Deck existiert, bevor wir es updaten
+        if (!qardService.getAllDeckNames().contains(deckName)) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\": \"Deck '" + deckName + "' wurde nicht gefunden.\"}")
+                    .build();
+        }
 
-        // HTTP 200 OK (Wir müssen keinen Body zurückgeben, Erfolg reicht)
+        qardService.updateStats(deckName, request.wussteIch());
+
+        // HTTP 200 OK (Erfolg reicht, wir senden keinen Body zurück)
         return Response.ok().build();
     }
 
-    // --- NEUER ENDPUNKT: Statistik abrufen ---
     @GET
-    @Path("/stats")
-    public Response getStats() {
-        return Response.ok(qardService.getStats()).build();
+    @Path("/decks/{deckName}/stats")
+    public Response getDeckStats(@PathParam("deckName") String deckName) {
+        QardService.StatResult stats = qardService.getStats(deckName);
+
+        if (stats == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\": \"Statistiken für Deck '" + deckName + "' wurden nicht gefunden.\"}")
+                    .build();
+        }
+
+        return Response.ok(stats).build();
     }
 
     // Ein Record, das genau der erwarteten JSON-Struktur des Frontends entspricht: {"wussteIch": true/false}

@@ -15,11 +15,11 @@ public class QardService {
 
     // Thread-sicherer In-Memory Cache für die Karten
     private final Map<String, List<Qard>> cache = new ConcurrentHashMap<>();
-    private final Random random = new Random();
 
-    // Thread-sichere Zähler für die Statistiken (da REST-Requests parallel ankommen können)
-    private final AtomicInteger totalLearned = new AtomicInteger(0);
-    private final AtomicInteger totalCorrect = new AtomicInteger(0);
+    // NEU: Separater Thread-sicherer Cache für die Statistiken jedes Decks
+    private final Map<String, DeckStats> statsCache = new ConcurrentHashMap<>();
+
+    private final Random random = new Random();
 
     @PostConstruct
     void init() {
@@ -30,10 +30,13 @@ public class QardService {
                 new Qard(null, deckName, "Was ist das DOM?", "Document Object Model – eine Schnittstelle, um HTML-Strukturen mit Programmiersprachen wie JavaScript zu verändern.")
         );
         cache.put(deckName, new ArrayList<>(initialQards));
+        statsCache.put(deckName, new DeckStats()); // Initialisiere leere Stats für das Standard-Deck
     }
 
     public void addQards(String deckName, List<Qard> newQards) {
         cache.computeIfAbsent(deckName, k -> new ArrayList<>()).addAll(newQards);
+        // Stelle sicher, dass beim Anlegen eines neuen Decks auch die Statistik initialisiert wird
+        statsCache.putIfAbsent(deckName, new DeckStats());
     }
 
     public List<String> getAllDeckNames() {
@@ -49,33 +52,53 @@ public class QardService {
         return qardsInDeck.get(randomIndex);
     }
 
-    // --- NEUE FUNKTIONEN ---
-
-    /**
-     * Gibt die komplette Liste aller Karten eines Decks zurück.
-     */
     public List<Qard> getAllQards(String deckName) {
-        // Gibt die Liste zurück oder eine leere Liste, falls das Deck nicht existiert
         return cache.getOrDefault(deckName, new ArrayList<>());
     }
 
+    // --- ANGEPASSTE FUNKTIONEN: Statistiken pro Deck ---
+
     /**
-     * Aktualisiert die Lern-Statistiken.
+     * Aktualisiert die Lern-Statistiken für ein spezifisches Deck.
      */
-    public void updateStats(boolean wussteIch) {
-        totalLearned.incrementAndGet(); // Karte wurde gelernt (Zähler + 1)
-        if (wussteIch) {
-            totalCorrect.incrementAndGet(); // Karte war richtig (Zähler + 1)
+    public void updateStats(String deckName, boolean wussteIch) {
+        DeckStats stats = statsCache.get(deckName);
+        if (stats != null) {
+            stats.recordAnswer(wussteIch);
         }
     }
 
     /**
-     * Gibt die aktuellen Statistiken als praktisches Record zurück.
+     * Gibt die aktuellen Statistiken eines spezifischen Decks zurück.
+     * @return StatResult oder null, falls das Deck nicht existiert.
      */
-    public StatResult getStats() {
-        return new StatResult(totalLearned.get(), totalCorrect.get());
+    public StatResult getStats(String deckName) {
+        DeckStats stats = statsCache.get(deckName);
+        if (stats == null) {
+            return null;
+        }
+        return stats.toResult();
     }
 
-    // Ein kleines Record, das von Quarkus/Jackson automatisch in JSON umgewandelt wird
+    // Ein Record, das von Quarkus/Jackson in JSON umgewandelt wird
     public record StatResult(int totalLearned, int totalCorrect) {}
+
+    /**
+     * Interne Hilfsklasse, um die Zähler für ein Deck Thread-sicher zu verwalten.
+     */
+    private static class DeckStats {
+        private final AtomicInteger totalLearned = new AtomicInteger(0);
+        private final AtomicInteger totalCorrect = new AtomicInteger(0);
+
+        public void recordAnswer(boolean correct) {
+            totalLearned.incrementAndGet();
+            if (correct) {
+                totalCorrect.incrementAndGet();
+            }
+        }
+
+        public StatResult toResult() {
+            return new StatResult(totalLearned.get(), totalCorrect.get());
+        }
+    }
 }
