@@ -1,13 +1,9 @@
 name: Native Build Check
 
 on:
-  push:
-    branches: [ main ]
-    paths-ignore:
-      - 'README.md'
-      - '.gitignore'
-  pull_request:
-    branches: [ main ]
+  schedule:
+    - cron: '0 * * * *' # Läuft zu jeder vollen Stunde
+  workflow_dispatch: # Ermöglicht manuelles Starten
 
 jobs:
   native-build:
@@ -16,8 +12,28 @@ jobs:
     
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # Holt die gesamte Historie für den Zeitstempel-Vergleich
+
+      - name: Check for recent commits
+        id: check_commits
+        run: |
+          # Prüft, ob es Commits in den letzten 60 Minuten gab
+          LAST_COMMIT_TIME=$(git log -1 --format=%at)
+          CURRENT_TIME=$(date +%s)
+          DIFF=$((CURRENT_TIME - LAST_COMMIT_TIME))
+          
+          if [ $DIFF -le 3600 ] || [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "Commits in der letzten Stunde gefunden oder manueller Start. Build wird fortgesetzt."
+            echo "run_build=true" >> $GITHUB_OUTPUT
+          else
+            echo "Keine neuen Commits in der letzten Stunde. Build wird übersprungen."
+            echo "run_build=false" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
 
       - name: Set up GraalVM
+        if: steps.check_commits.outputs.run_build == 'true'
         uses: graalvm/setup-graalvm@v1
         with:
           java-version: '25' # Quarkus 3.34.1 supports Java 21+ for native. Maven 25 might be too new for stable GraalVM GH Action support in some regions or versions, but let's try to match Java 25 if possible or use a stable one.
@@ -26,7 +42,9 @@ jobs:
           cache: 'maven'
 
       - name: Build Native
+        if: steps.check_commits.outputs.run_build == 'true'
         run: ./mvnw install -Dnative -DskipTests -B
 
       - name: Run Native ITs
+        if: steps.check_commits.outputs.run_build == 'true'
         run: ./mvnw verify -Dnative -Dmaven.test.skip=true -DskipITs=false -B
