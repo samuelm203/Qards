@@ -66,46 +66,31 @@ body {
 
 body.theme-enterprise {
     background-color: #ffffff !important;
-    font-family: system-ui, -apple-system, Arial, sans-serif !important; /* Strenge System-Schriftart */
-    color: #111827 !important; /* Sehr dunkles Grau/Schwarz */
+    font-family: system-ui, -apple-system, Arial, sans-serif !important;
+    color: #111827 !important;
 }
 
-/* Emojis ausblenden, strenge Icons einblenden */
 .theme-enterprise .emoji { display: none !important; }
 .theme-enterprise .enterprise-icon { display: inline-flex !important; align-items: center; justify-content: center; }
 
 /* Keine weichen Ecken mehr! Maximal 2px Radius */
-.theme-enterprise * {
-    border-radius: 2px !important;
-}
+.theme-enterprise * { border-radius: 2px !important; }
 
 /* Schatten und Verläufe killen */
 .theme-enterprise .shadow-soft,
 .theme-enterprise .shadow-sm,
-.theme-enterprise .shadow-xl {
-    box-shadow: none !important;
-}
-.theme-enterprise .bg-gradient-to-br {
-    background: #ffffff !important;
-}
+.theme-enterprise .shadow-xl { box-shadow: none !important; }
+.theme-enterprise .bg-gradient-to-br { background: #ffffff !important; }
 
 /* Harte, dünne Rahmen statt "Chunky" Look */
 .theme-enterprise .border-2,
-.theme-enterprise .border-4 {
-    border-width: 1px !important;
-    border-color: #d1d5db !important; /* gray-300 */
-}
+.theme-enterprise .border-4 { border-width: 1px !important; border-color: #d1d5db !important; }
 .theme-enterprise .border-b-8,
-.theme-enterprise .border-b-4 {
-    border-bottom-width: 1px !important;
-}
+.theme-enterprise .border-b-4 { border-bottom-width: 1px !important; }
 
 /* Karten fixieren */
 .theme-enterprise .card-front,
-.theme-enterprise .card-back {
-    border: 1px solid #d1d5db !important;
-    background-color: #ffffff !important;
-}
+.theme-enterprise .card-back { border: 1px solid #d1d5db !important; background-color: #ffffff !important; }
 
 /* Farben: Verspieltes Indigo/Violett wird zu striktem Schwarz/Grau */
 .theme-enterprise .bg-indigo-500,
@@ -120,16 +105,15 @@ body.theme-enterprise {
 .theme-enterprise .text-indigo-600,
 .theme-enterprise .text-indigo-800,
 .theme-enterprise .text-indigo-900,
-.theme-enterprise .text-indigo-950 {
-    color: #000000 !important;
-}
+.theme-enterprise .text-indigo-950 { color: #000000 !important; }
 
 /* Bunte Box-Hintergründe grau machen */
 .theme-enterprise .bg-indigo-50,
 .theme-enterprise .bg-teal-50,
 .theme-enterprise .bg-amber-50,
 .theme-enterprise .bg-slate-50,
-.theme-enterprise .bg-purple-50 {
+.theme-enterprise .bg-purple-50,
+.theme-enterprise .bg-slate-50\/30 {
     background-color: #f9fafb !important;
     border-color: #e5e7eb !important;
 }
