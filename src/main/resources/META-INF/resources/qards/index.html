@@ -3,105 +3,399 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qards – CSS Versicherung</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Qards - Lernkarten</title>
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- --- style.css --- -->
+    <style>
+        /* Basis-Styling und sanfte Übergänge */
+        body {
+            background-color: #f8fafc;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* 3D-Flip-Effekt für die Karteikarten */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        /* Wenn die Klasse 'flipped' gesetzt ist, drehe die Karte */
+        .card-inner.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* Vorder- und Rückseite der Karte */
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Für Safari */
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-front {
+            background-color: #ffffff;
+            color: #1e293b;
+        }
+
+        /* Die Rückseite ist von Anfang an gedreht */
+        .card-back {
+            background-color: #eff6ff;
+            color: #1e40af;
+            transform: rotateY(180deg);
+            border: 2px solid #bfdbfe;
+        }
+    </style>
 </head>
-<body>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col items-center py-10 px-4">
 
-    <!-- Corporate Header -->
-    <header>
-        <div class="header-inner">
-            <div class="brand">
-                <span class="brand-logo">CSS</span>
-                <div class="brand-divider"></div>
-                <span class="brand-subtitle">Lernkarten / Flashcards</span>
+<!-- Header -->
+<header class="mb-10 text-center">
+    <h1 class="text-4xl font-extrabold text-blue-600 tracking-tight">Qards.</h1>
+    <p class="text-slate-500 mt-2">Dein smarter Karteikarten-Trainer</p>
+</header>
+
+<!-- UI für Fehlermeldungen (statt alert) -->
+<div id="error-message" class="hidden fixed top-4 right-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-md z-50 transition-opacity">
+    <p id="error-text">Fehler aufgetreten.</p>
+</div>
+
+<!-- Haupt-Container für die Views -->
+<main class="w-full max-w-2xl relative">
+
+    <!-- ==========================================
+         VIEW 1: STARTBILDSCHIRM
+         ========================================== -->
+    <div id="view-start" class="block animate-fade-in">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
+            <h2 class="text-xl font-bold mb-4">Verfügbare Decks</h2>
+
+            <!-- Container für die dynamisch geladenen Decks -->
+            <div id="decks-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <p class="text-slate-400 text-sm italic col-span-full">Lade Decks vom Server...</p>
             </div>
         </div>
-    </header>
 
-    <!-- Page Title Band -->
-    <div class="page-band">
-        <div class="page-band-inner">
-            <h1>Vokabeln lernen</h1>
-            <p>Wählen Sie ein Set und beginnen Sie Ihr Training.</p>
+        <button onclick="showView('view-create')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-colors flex justify-center items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            Neues Kartenset erstellen
+        </button>
+    </div>
+
+    <!-- ==========================================
+         VIEW 2: QUIZ-MODUS
+         ========================================== -->
+    <div id="view-quiz" class="hidden animate-fade-in">
+        <!-- Navigation -->
+        <div class="flex justify-between items-center mb-6">
+            <button onclick="showView('view-start')" class="text-slate-500 hover:text-slate-800 font-medium flex items-center gap-1 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                Zurück zur Übersicht
+            </button>
+            <span id="current-deck-title" class="font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-sm">Deck Name</span>
+        </div>
+
+        <!-- Die 3D Karteikarte -->
+        <div class="perspective-1000 w-full h-80 mb-8 mx-auto">
+            <div id="flashcard" class="card-inner" onclick="flipCard()">
+                <!-- Vorderseite (Frage) -->
+                <div class="card-front">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Frage</span>
+                    <h3 id="card-question" class="text-2xl font-semibold text-center leading-snug">Lade Frage...</h3>
+                    <p class="text-sm text-slate-400 mt-6 animate-pulse">Klicke zum Umdrehen</p>
+                </div>
+                <!-- Rückseite (Antwort) -->
+                <div class="card-back">
+                    <span class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-4">Antwort</span>
+                    <h3 id="card-answer" class="text-xl font-medium text-center leading-snug">Lade Antwort...</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Steuerung -->
+        <button onclick="loadRandomCard()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-colors">
+            Nächste zufällige Karte
+        </button>
+    </div>
+
+    <!-- ==========================================
+         VIEW 3: ERSTELL-ANSICHT
+         ========================================== -->
+    <div id="view-create" class="hidden animate-fade-in">
+        <div class="flex items-center mb-6">
+            <button onclick="showView('view-start')" class="text-slate-500 hover:text-slate-800 font-medium flex items-center gap-1 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                Abbrechen
+            </button>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h2 class="text-2xl font-bold mb-6">Neues Deck erstellen</h2>
+
+            <div class="mb-6">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Name des Decks</label>
+                <input type="text" id="input-deck-name" placeholder="z.B. Java Grundlagen" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+            </div>
+
+            <div class="border-t border-slate-200 pt-6 mb-2">
+                <h3 class="text-lg font-semibold mb-4 text-slate-700">Karten hinzufügen</h3>
+
+                <!-- Container für dynamische Frage/Antwort Paare -->
+                <div id="qa-container" class="space-y-4 mb-4">
+                    <!-- Ein initiales leeres Paar -->
+                </div>
+
+                <button onclick="addQaField()" class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center gap-1 py-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                    Weiteres Paar hinzufügen
+                </button>
+            </div>
+
+            <button onclick="saveDeck()" class="w-full mt-8 bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-xl shadow-md transition-colors">
+                Deck speichern
+            </button>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="container">
-        <div class="content">
+</main>
 
-            <!-- Error Message -->
-            <div class="error-message" id="errorMessage">
-                <div class="error-title" id="errorTitle">Fehler</div>
-                <div id="errorText"></div>
-            </div>
+<!-- --- app.js --- -->
+<script>
+    // Konfiguration
+    const API_BASE_URL = '/api/decks';
+    let currentActiveDeck = null;
 
-            <!-- Sets List View -->
-            <div id="setsView">
-                <div class="section-heading">Verfügbare Sets</div>
-                <div class="sets-container" id="setsList">
-                    <!-- Sets loaded by JS -->
-                </div>
-            </div>
+    // --- UI Hilfsfunktionen ---
 
-            <!-- Cards View -->
-            <div class="cards-view" id="cardsView">
-                <div class="view-header">
-                    <h2 class="view-title" id="setNameDisplay">—</h2>
-                    <div class="card-counter">
-                        <span id="currentCardNum">1</span> / <span id="totalCardNum">0</span>
+    // Wechselt zwischen den drei Hauptansichten
+    function showView(viewId) {
+        document.getElementById('view-start').classList.add('hidden');
+        document.getElementById('view-quiz').classList.add('hidden');
+        document.getElementById('view-create').classList.add('hidden');
+
+        document.getElementById(viewId).classList.remove('hidden');
+
+        // Wenn wir auf Start wechseln, laden wir die Decks neu
+        if(viewId === 'view-start') {
+            loadDecks();
+        }
+    }
+
+    // Zeigt eine elegante Fehlermeldung oben rechts an (besser als alert)
+    function showError(message) {
+        const errorDiv = document.getElementById('error-message');
+        document.getElementById('error-text').innerText = message;
+        errorDiv.classList.remove('hidden');
+        setTimeout(() => {
+            errorDiv.classList.add('hidden');
+        }, 4000);
+    }
+
+    // --- Startbildschirm Logik ---
+
+    // GET: Lädt alle Deck-Namen vom Quarkus-Backend
+    async function loadDecks() {
+        const container = document.getElementById('decks-container');
+        container.innerHTML = '<p class="text-slate-400 text-sm italic col-span-full">Lade Decks...</p>';
+
+        try {
+            const response = await fetch(API_BASE_URL);
+            if (!response.ok) throw new Error('Netzwerk-Antwort war nicht ok');
+
+            const decks = await response.json();
+
+            container.innerHTML = ''; // Lade-Text entfernen
+
+            if(decks.length === 0) {
+                container.innerHTML = '<p class="text-slate-500 col-span-full">Noch keine Decks vorhanden. Erstelle dein erstes!</p>';
+                return;
+            }
+
+            // Generiere Buttons für jedes Deck
+            decks.forEach(deckName => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-white hover:bg-slate-50 border border-slate-200 text-left p-5 rounded-xl shadow-sm transition-all hover:shadow-md flex justify-between items-center group';
+                btn.innerHTML = `
+                        <span class="font-semibold text-slate-700 group-hover:text-blue-600 transition-colors">${deckName}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-300 group-hover:text-blue-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+                    `;
+                // Bei Klick: Setze aktuelles Deck, wechsle View und lade erste Karte
+                btn.onclick = () => {
+                    currentActiveDeck = deckName;
+                    document.getElementById('current-deck-title').innerText = deckName;
+                    showView('view-quiz');
+                    loadRandomCard();
+                };
+                container.appendChild(btn);
+            });
+
+        } catch (error) {
+            console.error("Fehler beim Laden der Decks:", error);
+            container.innerHTML = '<p class="text-red-500 text-sm col-span-full">Fehler beim Verbinden mit http://localhost:8080. Läuft das Quarkus-Backend?</p>';
+        }
+    }
+
+    // --- Quiz-Modus Logik ---
+
+    // CSS-Klasse toggeln, um die 3D-Drehung auszulösen
+    function flipCard() {
+        document.getElementById('flashcard').classList.toggle('flipped');
+    }
+
+    // GET: Lädt genau eine zufällige Karte aus dem gewählten Deck
+    async function loadRandomCard() {
+        if (!currentActiveDeck) return;
+
+        const qElement = document.getElementById('card-question');
+        const aElement = document.getElementById('card-answer');
+        const flashcard = document.getElementById('flashcard');
+
+        // Stelle sicher, dass wir die Vorderseite sehen, bevor die neue Karte lädt
+        flashcard.classList.remove('flipped');
+
+        // Kurzes visuelles Feedback beim Laden
+        qElement.innerText = "Lade Karte...";
+        qElement.classList.add('opacity-50');
+
+        // Timeout simuliert, damit die CSS-Dreh-Animation der Rückseite Zeit hat abzuschließen (falls sie noch gedreht war)
+        setTimeout(async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/${currentActiveDeck}/random`);
+                if (!response.ok) {
+                    throw new Error('Deck nicht gefunden');
+                }
+
+                const card = await response.json();
+
+                qElement.innerText = card.question;
+                aElement.innerText = card.answer;
+                qElement.classList.remove('opacity-50');
+            } catch (error) {
+                console.error("Fehler beim Laden der Karte:", error);
+                qElement.innerText = "Fehler beim Laden.";
+                qElement.classList.remove('opacity-50');
+                showError("Konnte keine Karte aus diesem Deck laden.");
+            }
+        }, 300); // 300ms warten
+    }
+
+    // --- Erstell-Ansicht Logik ---
+
+    // Fügt dem DOM ein neues Formular-Feld für ein Frage/Antwort-Paar hinzu
+    function addQaField() {
+        const container = document.getElementById('qa-container');
+        const index = container.children.length + 1;
+
+        const div = document.createElement('div');
+        div.className = 'qa-pair bg-slate-50 p-4 rounded-xl border border-slate-200 relative';
+        div.innerHTML = `
+                <div class="absolute top-2 right-3 text-xs font-bold text-slate-300">#${index}</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Frage</label>
+                        <input type="text" class="input-q w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" placeholder="z.B. Was ist HTML?">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Antwort</label>
+                        <input type="text" class="input-a w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" placeholder="z.B. HyperText Markup Language">
                     </div>
                 </div>
+            `;
+        container.appendChild(div);
+    }
 
-                <!-- Flashcard -->
-                <div class="flashcard" id="flashcard">
-                    <div class="flashcard-inner" id="flashcardInner">
-                        <div class="flashcard-front flashcard-face">
-                            <div class="card-label">Vorderseite</div>
-                            <div class="card-content" id="cardFront">Laden…</div>
-                            <div class="card-hint">Klicken Sie, um die Antwort zu sehen</div>
-                        </div>
-                        <div class="flashcard-back flashcard-face">
-                            <div class="card-label">Rückseite</div>
-                            <div class="card-content" id="cardBack">Laden…</div>
-                            <div class="card-hint">Klicken Sie, um zurückzublättern</div>
-                        </div>
-                    </div>
-                </div>
+    // POST: Sendet das neue Deck an das Quarkus-Backend
+        const rawDeckName = document.getElementById('input-deck-name').value.trim();
 
-                <!-- Status Bar -->
-                <div class="status-bar" id="statusBar">
-                    <span>Status:</span>
-                    <span id="statusText">Bereit</span>
-                    <span id="learnedIndicator" class="hidden status-learned">&#10003; Gelernt</span>
-                </div>
+        if (!rawDeckName) {
+            showError("Bitte gib dem Deck einen Namen.");
+            return;
+        }
 
-                <!-- Controls -->
-                <div class="controls">
-                    <div class="control-group">
-                        <button class="secondary" id="prevBtn" onclick="previousCard()">&#8592; Zurück</button>
-                        <button class="secondary" id="nextBtn" onclick="nextCard()">Weiter &#8594;</button>
-                    </div>
-                    <div class="control-group">
-                        <button class="primary" id="shuffleBtn" onclick="shuffleCards()">Mischen</button>
-                        <button class="primary" id="markLearnedBtn" onclick="toggleLearned()">&#10003; Gelernt</button>
-                    </div>
-                    <div class="control-group">
-                        <button id="backBtn" onclick="backToSets()">&#8592; Alle Sets</button>
-                    </div>
-                </div>
-            </div>
+        // Erlaube nur Buchstaben, Zahlen, Bindestrich und Unterstrich im Deck-Namen
+        const deckNamePattern = /^[A-Za-z0-9_-]+$/;
+        if (!deckNamePattern.test(rawDeckName)) {
+            showError("Ungültiger Deck-Name. Bitte nur Buchstaben, Zahlen, Bindestrich und Unterstrich verwenden.");
+            return;
+        }
 
-            <!-- Loading State -->
-            <div class="loading" id="loadingState">
-                <div class="retro-spinner"></div>
-                <div class="loading-text">Wird geladen<span class="loading-dots"></span></div>
-            </div>
+        const deckName = rawDeckName;        }
 
-        </div>
-    </div>
+        const qaPairs = document.querySelectorAll('.qa-pair');
+        const newCards = [];
 
-    <script src="app.js"></script>
+        // Alle Eingabefelder auslesen und zusammenbauen
+        qaPairs.forEach(pair => {
+            const q = pair.querySelector('.input-q').value.trim();
+            const a = pair.querySelector('.input-a').value.trim();
+
+            // Wir nehmen nur Paare, bei denen beide Felder ausgefüllt sind
+            if (q && a) {
+                newCards.push({
+                    deckName: deckName, // Entspricht dem Feld in deinem Java-Record
+                    question: q,
+                    answer: a
+                });
+            }
+        });
+
+        if (newCards.length === 0) {
+            showError("Bitte fülle mindestens ein komplettes Frage/Antwort-Paar aus.");
+            return;
+        }
+
+        try {
+            // Sende Daten als JSON-Array an /api/decks/{deckName}
+            const response = await fetch(`${API_BASE_URL}/${encodeURIComponent(deckName)}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newCards)
+            });
+
+            if (response.ok) {
+                // Erfolgreich! Formular zurücksetzen und zur Startseite wechseln
+                document.getElementById('input-deck-name').value = '';
+                document.getElementById('qa-container').innerHTML = '';
+                addQaField(); // Ein leeres Feld vorbereiten
+                showView('view-start'); // loadDecks() wird hierbei automatisch aufgerufen
+            } else {
+                showError("Backend hat einen Fehler gemeldet (Status " + response.status + ").");
+            }
+        } catch (error) {
+            console.error("Speicherfehler:", error);
+            showError("Fehler beim Speichern. Läuft dein Backend auf http://localhost:8080?");
+        }
+    }
+
+    // --- Initialisierung beim Start ---
+    // Wenn die Seite geladen wird, generiere direkt ein leeres Formular-Feld für später
+    addQaField();
+    // Lade die initialen Decks vom Backend (z.B. dein 'Webentwicklung' Standard-Deck)
+    loadDecks();
+
+</script>
 </body>
 </html>
