@@ -22,21 +22,18 @@ body {
 
 .card-inner.flipped { transform: rotateY(180deg); }
 
+/* Vorder- und Rückseite: Basis-Setup für unsere neue HTML-Flexbox */
 .card-front, .card-back {
     position: absolute;
     width: 100%;
     height: 100%;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2.5rem;
     border-radius: 2rem;
     border: 3px solid #e2e8f0;
     border-bottom-width: 8px;
     background: #ffffff;
+    overflow: hidden; /* Verhindert, dass Inhalte über die runden Ecken ragen */
 }
 
 .card-back {
@@ -65,9 +62,9 @@ body {
    ========================================================== */
 
 body.theme-enterprise {
-    background-color: #f1f5f9 !important; /* Sehr zartes Hellgrau/Blau als Canvas */
+    background-color: #f1f5f9 !important;
     font-family: system-ui, -apple-system, Arial, sans-serif !important;
-    color: #0f172a !important; /* Tiefes Slate */
+    color: #0f172a !important;
 }
 
 .theme-enterprise .emoji { display: none !important; }
@@ -91,7 +88,7 @@ body.theme-enterprise {
 .theme-enterprise .card-front,
 .theme-enterprise .card-back { border: 1px solid #94a3b8 !important; background-color: #ffffff !important; }
 
-/* === NEU: CORPORATE NAVY BLAU (#1e3a8a) === */
+/* CORPORATE NAVY BLAU (#1e3a8a) */
 .theme-enterprise .bg-indigo-500,
 .theme-enterprise .bg-indigo-600,
 .theme-enterprise .bg-violet-600 {
@@ -106,7 +103,7 @@ body.theme-enterprise {
 .theme-enterprise .text-indigo-900,
 .theme-enterprise .text-indigo-950 { color: #1e3a8a !important; }
 
-/* Pastellige Boxen in sachliches, eisiges Hellblau verwandeln */
+/* Pastellige Boxen in sachliches Hellblau/Grau verwandeln */
 .theme-enterprise .bg-indigo-50,
 .theme-enterprise .bg-teal-50,
 .theme-enterprise .bg-amber-50,
@@ -115,7 +112,7 @@ body.theme-enterprise {
     border-color: #e2e8f0 !important;
 }
 
-/* Action Buttons im Quiz (Weißer Hintergrund mit harten farbigen Rändern) */
+/* Action Buttons im Quiz */
 .theme-enterprise .bg-teal-400,
 .theme-enterprise .bg-teal-500 {
     background-color: #f0fdf4 !important;
@@ -129,5 +126,4 @@ body.theme-enterprise {
     border: 1px solid #9f1239 !important;
 }
 
-/* Typografie straffen */
 .theme-enterprise .font-black { font-weight: 700 !important; }

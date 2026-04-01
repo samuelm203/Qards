@@ -10,7 +10,7 @@
 <body class="antialiased h-screen w-screen overflow-hidden flex flex-col bg-slate-50">
 
 <div id="view-onboarding" class="fixed inset-0 bg-slate-50 z-[100] flex flex-col items-center justify-center p-6 hidden overflow-y-auto">
-    <h1 class="text-4xl md:text-5xl font-black text-slate-800 mb-4 text-center">Willkommen bei Qards</h1>
+    <h1 class="text-4xl md:text-5xl font-black text-slate-800 mb-6 text-center">Willkommen bei Qards</h1>
     <p class="text-lg md:text-xl text-slate-500 mb-12 text-center max-w-2xl">Wähle dein bevorzugtes Design für das beste Lernerlebnis. (Du kannst dies später jederzeit ändern).</p>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
@@ -52,98 +52,99 @@
         <p id="error-text" class="text-sm"></p>
     </div>
 
-    <main class="flex-grow w-full max-w-6xl mx-auto px-4 md:px-8 py-6 relative overflow-hidden flex flex-col">
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 md:px-8 py-8 relative overflow-hidden flex flex-col">
 
         <div id="view-start" class="view-transition flex flex-col h-full w-full">
 
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 shrink-0 bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                <h2 class="text-2xl md:text-3xl font-black text-slate-800 flex items-center gap-3">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-8 shrink-0 bg-white p-8 rounded-3xl shadow-sm border border-slate-100 gap-6">
+                <h2 class="text-2xl md:text-3xl font-black text-slate-800 flex items-center gap-4">
                     <span class="emoji text-4xl">📚</span>
                     <svg class="w-10 h-10 enterprise-icon text-indigo-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                     Deine Bibliothek
                 </h2>
-                <button onclick="showView('view-create')" class="btn-haptic bg-indigo-500 hover:bg-indigo-600 text-white font-black py-4 px-8 rounded-2xl shadow-sm border-b-4 border-indigo-700 flex items-center gap-2 mt-4 sm:mt-0 w-full sm:w-auto justify-center">
+                <button onclick="showView('view-create')" class="btn-haptic bg-indigo-500 hover:bg-indigo-600 text-white font-black py-4 px-8 rounded-2xl shadow-sm border-b-4 border-indigo-700 flex items-center gap-3 w-full sm:w-auto justify-center">
                     <span class="text-xl emoji">➕</span>
                     <svg class="w-6 h-6 enterprise-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" /></svg>
                     Neues Set erstellen
                 </button>
             </div>
 
-            <div class="flex-grow overflow-y-auto pb-6 pr-2">
-                <div id="decks-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="flex-grow overflow-y-auto pb-8 pr-2">
+                <div id="decks-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 </div>
             </div>
         </div>
 
         <div id="view-deck-dashboard" class="hidden view-transition flex flex-col h-full w-full max-w-4xl mx-auto justify-center">
-            <div class="bg-white rounded-3xl p-8 md:p-12 shadow-soft border-2 border-slate-100 flex-shrink-0">
-                <div class="mb-10 flex items-center gap-6 pb-8 border-b-2 border-slate-50">
-                    <button onclick="showView('view-start')" class="btn-haptic w-14 h-14 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-500 shadow-sm transition-colors">
+            <div class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-soft border-2 border-slate-100 flex-shrink-0">
+
+                <div class="mb-12 flex items-center gap-8 pb-8 border-b-2 border-slate-50">
+                    <button onclick="showView('view-start')" class="btn-haptic w-16 h-16 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600 shadow-sm transition-colors shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                     </button>
                     <div>
-                        <h2 id="dashboard-deck-title" class="text-3xl md:text-5xl font-black text-slate-800">Deck Name</h2>
-                        <p class="text-slate-500 font-bold mt-2 text-lg">Übersicht & Training</p>
+                        <h2 id="dashboard-deck-title" class="text-3xl md:text-5xl font-black text-slate-800 leading-tight">Deck Name</h2>
+                        <p class="text-slate-500 font-bold mt-2 text-xl">Übersicht & Training</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-12">
                     <div class="bg-slate-50 border-2 border-slate-100 p-8 rounded-3xl flex items-center gap-6">
-                        <div class="bg-indigo-100 p-4 rounded-2xl flex items-center justify-center w-20 h-20">
+                        <div class="bg-indigo-100 p-4 rounded-2xl flex items-center justify-center w-20 h-20 shrink-0">
                             <span class="text-5xl emoji">🧠</span>
                             <svg class="w-10 h-10 enterprise-icon text-indigo-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                         </div>
                         <div>
                             <span id="deck-stat-learned" class="text-5xl font-black text-slate-800 block">0</span>
-                            <span class="text-sm font-bold text-slate-400 uppercase tracking-wider">Karten trainiert</span>
+                            <span class="text-base font-bold text-slate-400 uppercase tracking-wider">Karten trainiert</span>
                         </div>
                     </div>
                     <div class="bg-slate-50 border-2 border-slate-100 p-8 rounded-3xl flex items-center gap-6">
-                        <div class="bg-amber-100 p-4 rounded-2xl flex items-center justify-center w-20 h-20">
+                        <div class="bg-amber-100 p-4 rounded-2xl flex items-center justify-center w-20 h-20 shrink-0">
                             <span class="text-5xl emoji">🏆</span>
                             <svg class="w-10 h-10 enterprise-icon text-indigo-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </div>
                         <div>
                             <span id="deck-stat-rate" class="text-5xl font-black text-amber-500 block">0%</span>
-                            <span class="text-sm font-bold text-slate-400 uppercase tracking-wider">Erfolgsquote</span>
+                            <span class="text-base font-bold text-slate-400 uppercase tracking-wider">Erfolgsquote</span>
                         </div>
                     </div>
                 </div>
 
-                <h3 class="text-xl font-black text-slate-800 mb-6 uppercase tracking-wider text-center sm:text-left">Training starten</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <h3 class="text-2xl font-black text-slate-800 mb-6 uppercase tracking-wider text-center sm:text-left">Training starten</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <button onclick="startTraining('strict')" class="btn-haptic w-full bg-white border-2 border-indigo-100 hover:border-indigo-400 p-8 rounded-[2rem] font-bold transition-all flex items-center gap-6 shadow-sm border-b-8 text-left group">
-                        <div class="bg-indigo-50 group-hover:bg-indigo-500 transition-colors p-5 rounded-3xl flex items-center justify-center">
+                        <div class="bg-indigo-50 group-hover:bg-indigo-500 transition-colors p-5 rounded-3xl flex items-center justify-center shrink-0">
                             <span class="text-5xl emoji">🃏</span>
                             <svg class="w-12 h-12 enterprise-icon text-indigo-800 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
                         </div>
                         <div>
                             <div class="text-2xl font-black text-slate-800 group-hover:text-indigo-700 transition-colors">Ganzes Deck strikt</div>
-                            <div class="text-slate-500 font-semibold mt-1">Lerne alle Karten der Reihe nach.</div>
+                            <div class="text-slate-500 font-semibold mt-2 text-lg">Lerne alle Karten der Reihe nach.</div>
                         </div>
                     </button>
 
                     <button onclick="startTraining('random')" class="btn-haptic w-full bg-white border-2 border-teal-100 hover:border-teal-400 p-8 rounded-[2rem] font-bold transition-all flex items-center gap-6 shadow-sm border-b-8 text-left group">
-                        <div class="bg-teal-50 group-hover:bg-teal-500 transition-colors p-5 rounded-3xl flex items-center justify-center">
+                        <div class="bg-teal-50 group-hover:bg-teal-500 transition-colors p-5 rounded-3xl flex items-center justify-center shrink-0">
                             <span class="text-5xl emoji">🎲</span>
                             <svg class="w-12 h-12 enterprise-icon text-indigo-800 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                         </div>
                         <div>
                             <div class="text-2xl font-black text-slate-800 group-hover:text-teal-700 transition-colors">Zufälliger Mix</div>
-                            <div class="text-slate-500 font-semibold mt-1">Endloses Training kreuz und quer.</div>
+                            <div class="text-slate-500 font-semibold mt-2 text-lg">Endloses Training kreuz und quer.</div>
                         </div>
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="view-quiz" class="hidden view-transition flex flex-col h-full w-full max-w-3xl mx-auto justify-between pb-6">
-            <div class="w-full flex items-center justify-between mb-6 bg-white p-4 rounded-full shadow-sm border-2 border-slate-100 shrink-0">
+        <div id="view-quiz" class="hidden view-transition flex-col h-full w-full max-w-3xl mx-auto justify-between pb-6">
+            <div class="w-full flex items-center justify-between mb-8 bg-white p-4 rounded-full shadow-sm border-2 border-slate-100 shrink-0">
                 <button onclick="openDeckDashboard(currentActiveDeck)" class="btn-haptic w-14 h-14 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                 </button>
                 <div class="text-center px-4">
-                    <span id="quiz-deck-title" class="text-base font-black text-indigo-500 uppercase tracking-wider block">DECK NAME</span>
+                    <span id="quiz-deck-title" class="text-lg font-black text-indigo-500 uppercase tracking-wider block">DECK NAME</span>
                     <span id="quiz-progress" class="text-base text-slate-400 font-bold"></span>
                 </div>
                 <div class="w-14"></div>
@@ -151,31 +152,40 @@
 
             <div class="perspective-1000 w-full flex-grow relative mb-8">
                 <div id="flashcard" class="card-inner" onclick="flipCard()">
-                    <div class="card-front hover:-translate-y-1 transition-transform p-8 md:p-12">
-                        <div class="mb-8 flex justify-center">
+
+                    <div class="card-front hover:-translate-y-1 transition-transform p-8 md:p-12 flex flex-col items-center justify-center gap-8">
+                        <div class="flex justify-center shrink-0">
                             <span class="text-6xl emoji">🤔</span>
                             <svg class="w-16 h-16 enterprise-icon text-indigo-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </div>
-                        <h3 id="card-question" class="text-3xl md:text-5xl font-black text-slate-800 text-center px-6 leading-tight">...</h3>
-                        <div class="absolute bottom-8 bg-slate-100 text-slate-500 px-6 py-3 rounded-full text-base font-bold flex items-center gap-3">
+
+                        <div class="flex-grow w-full flex items-center justify-center overflow-y-auto px-4 py-2">
+                            <h3 id="card-question" class="text-3xl md:text-5xl font-black text-slate-800 text-center leading-tight">...</h3>
+                        </div>
+
+                        <div class="bg-slate-100 text-slate-500 px-6 py-3 rounded-full text-base font-bold flex items-center gap-3 shrink-0">
                             <span class="emoji text-xl">👆</span> Tippen zum Umdrehen
                         </div>
                     </div>
 
-                    <div class="card-back relative p-8 md:p-12">
-                        <div class="mb-8 flex justify-center">
+                    <div class="card-back p-8 md:p-12 flex flex-col items-center justify-center gap-8">
+                        <div class="flex justify-center shrink-0">
                             <span class="text-6xl emoji">💡</span>
                             <svg class="w-16 h-16 enterprise-icon text-indigo-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                         </div>
-                        <h3 id="card-answer" class="text-2xl md:text-4xl font-bold text-indigo-900 text-center px-6 leading-tight">...</h3>
-                        <p class="absolute bottom-8 text-base text-indigo-400 font-bold opacity-70">
+
+                        <div class="flex-grow w-full flex items-center justify-center overflow-y-auto px-4 py-2">
+                            <h3 id="card-answer" class="text-2xl md:text-4xl font-bold text-indigo-900 text-center leading-tight">...</h3>
+                        </div>
+
+                        <p class="text-base text-indigo-400 font-bold opacity-70 shrink-0">
                             Bewerte unten deine Antwort...
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div id="assessment-buttons" class="w-full grid grid-cols-2 gap-6 opacity-0 pointer-events-none transition-all duration-300 shrink-0">
+            <div id="assessment-buttons" class="w-full grid grid-cols-2 gap-8 opacity-0 pointer-events-none transition-all duration-300 shrink-0">
                 <button onclick="submitAssessment(false)" class="btn-haptic bg-rose-400 hover:bg-rose-500 text-white py-8 rounded-3xl font-black text-2xl flex flex-col items-center justify-center gap-3 transition-colors border-b-8 border-rose-600 shadow-soft">
                     <div class="flex items-center justify-center">
                         <span class="text-5xl emoji">😅</span>
@@ -193,7 +203,7 @@
             </div>
         </div>
 
-        <div id="view-create" class="hidden view-transition flex flex-col h-full w-full max-w-4xl mx-auto">
+        <div id="view-create" class="hidden view-transition flex-col h-full w-full max-w-4xl mx-auto">
             <div class="bg-white border-2 border-slate-100 rounded-[2.5rem] overflow-hidden shadow-soft flex flex-col h-full">
 
                 <div class="p-6 md:p-8 border-b-2 border-slate-100 flex justify-between items-center bg-slate-50 shrink-0">
@@ -211,7 +221,7 @@
                         <input type="text" id="input-deck-name" placeholder="z.B. Spanisch Vokabeln" class="w-full bg-slate-50 px-8 py-6 rounded-2xl border-2 border-slate-200 focus:border-indigo-400 outline-none transition-all font-bold text-2xl text-slate-800 placeholder-slate-300 shadow-inner">
                     </div>
 
-                    <div class="space-y-6">
+                    <div class="space-y-8">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-base font-black text-slate-400 uppercase tracking-wide">Karten-Paare hinzufügen</h3>
                         </div>
@@ -246,18 +256,18 @@
     loadDashboard = async function() {
         await originalLoadDashboard();
         const container = document.getElementById('decks-container');
-        if(!container) return; // Sicherer Exit, falls Container noch nicht bereit
+        if(!container) return;
         const buttons = container.querySelectorAll('button');
         buttons.forEach(btn => {
-            btn.className = 'btn-haptic w-full text-left bg-white border-2 border-slate-100 p-6 rounded-3xl shadow-soft hover:border-indigo-300 group flex justify-between items-center transition-all border-b-8';
+            btn.className = 'btn-haptic w-full text-left bg-white border-2 border-slate-100 p-8 rounded-3xl shadow-soft hover:border-indigo-300 group flex justify-between items-center transition-all border-b-8';
             const title = btn.querySelector('h3');
-            if(title) title.className = 'text-xl font-black text-slate-800 group-hover:text-indigo-600 transition-colors';
+            if(title) title.className = 'text-2xl font-black text-slate-800 group-hover:text-indigo-600 transition-colors';
             const svgContainer = btn.querySelector('.w-14');
             if(svgContainer) {
                 const innerSVG = svgContainer.querySelector('.enterprise-icon') ? svgContainer.querySelector('.enterprise-icon').innerHTML : svgContainer.innerHTML;
                 svgContainer.outerHTML = `
-                        <div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-500 group-hover:bg-indigo-500 group-hover:text-white transition-all transform group-hover:rotate-12 group-hover:scale-110 shadow-sm shrink-0">
-                            <span class="emoji text-2xl">📝</span>
+                        <div class="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-500 group-hover:bg-indigo-500 group-hover:text-white transition-all transform group-hover:rotate-12 group-hover:scale-110 shadow-sm shrink-0">
+                            <span class="emoji text-3xl">📝</span>
                             <span class="enterprise-icon">${innerSVG}</span>
                         </div>
                     `;
@@ -272,16 +282,16 @@
         if(!container) return;
         const lastRow = container.lastElementChild;
         if(lastRow) {
-            lastRow.className = 'qa-pair flex flex-col md:flex-row gap-3 items-center group bg-white p-4 rounded-3xl border-2 border-slate-100 shadow-sm focus-within:border-indigo-200 transition-colors relative';
+            lastRow.className = 'qa-pair flex flex-col md:flex-row gap-4 items-center group bg-white p-6 rounded-3xl border-2 border-slate-100 shadow-sm focus-within:border-indigo-200 transition-colors relative';
             const inputs = lastRow.querySelectorAll('input');
             inputs.forEach(input => {
-                input.className = Array.from(input.classList).filter(c => c.startsWith('input-')).join(' ') + ' flex-1 w-full bg-slate-50 px-5 py-4 rounded-xl border-2 border-transparent text-base font-bold focus:bg-white focus:border-indigo-300 outline-none transition-colors text-slate-700 placeholder-slate-300';
+                input.className = Array.from(input.classList).filter(c => c.startsWith('input-')).join(' ') + ' flex-1 w-full bg-slate-50 px-6 py-5 rounded-xl border-2 border-transparent text-lg font-bold focus:bg-white focus:border-indigo-300 outline-none transition-colors text-slate-700 placeholder-slate-300';
             });
             const btn = lastRow.querySelector('button');
             if(btn) {
                 const innerSVG = btn.querySelector('svg') ? btn.querySelector('svg').outerHTML : '';
-                btn.className = 'btn-haptic p-4 bg-white border-2 border-slate-100 rounded-2xl text-slate-300 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 transition-colors mt-2 md:mt-0 flex items-center justify-center shrink-0 w-full md:w-auto';
-                btn.innerHTML = `<span class="emoji text-lg">🗑️</span><span class="enterprise-icon">${innerSVG}</span>`;
+                btn.className = 'btn-haptic p-5 bg-white border-2 border-slate-100 rounded-2xl text-slate-300 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50 transition-colors mt-2 md:mt-0 flex items-center justify-center shrink-0 w-full md:w-auto';
+                btn.innerHTML = `<span class="emoji text-2xl">🗑️</span><span class="enterprise-icon">${innerSVG}</span>`;
             }
         }
     };
