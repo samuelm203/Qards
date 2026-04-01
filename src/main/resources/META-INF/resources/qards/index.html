@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qards – CSS Versicherung</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Corporate Header -->
+    <header>
+        <div class="header-inner">
+            <div class="brand">
+                <span class="brand-logo">CSS</span>
+                <div class="brand-divider"></div>
+                <span class="brand-subtitle">Lernkarten / Flashcards</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Title Band -->
+    <div class="page-band">
+        <div class="page-band-inner">
+            <h1>Vokabeln lernen</h1>
+            <p>Wählen Sie ein Set und beginnen Sie Ihr Training.</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="content">
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage">
+                <div class="error-title" id="errorTitle">Fehler</div>
+                <div id="errorText"></div>
+            </div>
+
+            <!-- Sets List View -->
+            <div id="setsView">
+                <div class="section-heading">Verfügbare Sets</div>
+                <div class="sets-container" id="setsList">
+                    <!-- Sets loaded by JS -->
+                </div>
+            </div>
+
+            <!-- Cards View -->
+            <div class="cards-view" id="cardsView">
+                <div class="view-header">
+                    <h2 class="view-title" id="setNameDisplay">—</h2>
+                    <div class="card-counter">
+                        <span id="currentCardNum">1</span> / <span id="totalCardNum">0</span>
+                    </div>
+                </div>
+
+                <!-- Flashcard -->
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-inner" id="flashcardInner">
+                        <div class="flashcard-front flashcard-face">
+                            <div class="card-label">Vorderseite</div>
+                            <div class="card-content" id="cardFront">Laden…</div>
+                            <div class="card-hint">Klicken Sie, um die Antwort zu sehen</div>
+                        </div>
+                        <div class="flashcard-back flashcard-face">
+                            <div class="card-label">Rückseite</div>
+                            <div class="card-content" id="cardBack">Laden…</div>
+                            <div class="card-hint">Klicken Sie, um zurückzublättern</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Bar -->
+                <div class="status-bar" id="statusBar">
+                    <span>Status:</span>
+                    <span id="statusText">Bereit</span>
+                    <span id="learnedIndicator" class="hidden status-learned">&#10003; Gelernt</span>
+                </div>
+
+                <!-- Controls -->
+                <div class="controls">
+                    <div class="control-group">
+                        <button class="secondary" id="prevBtn" onclick="previousCard()">&#8592; Zurück</button>
+                        <button class="secondary" id="nextBtn" onclick="nextCard()">Weiter &#8594;</button>
+                    </div>
+                    <div class="control-group">
+                        <button class="primary" id="shuffleBtn" onclick="shuffleCards()">Mischen</button>
+                        <button class="primary" id="markLearnedBtn" onclick="toggleLearned()">&#10003; Gelernt</button>
+                    </div>
+                    <div class="control-group">
+                        <button id="backBtn" onclick="backToSets()">&#8592; Alle Sets</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loadingState">
+                <div class="retro-spinner"></div>
+                <div class="loading-text">Wird geladen<span class="loading-dots"></span></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
