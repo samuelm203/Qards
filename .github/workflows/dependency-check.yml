@@ -1,0 +1,33 @@
+name: Dependency Check
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # Every Monday at midnight
+  push:
+    branches: [ main ]
+    paths:
+      - 'pom.xml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'pom.xml'
+  workflow_dispatch:
+
+jobs:
+  dependency-submission:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: 25
+          distribution: temurin
+          cache: maven
+
+      - name: Update dependency graph
+        uses: advanced-security/maven-dependency-submission-action@v4

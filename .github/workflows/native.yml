@@ -1,0 +1,32 @@
+name: Native Build Check
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  native-build:
+    name: Native Build on Ubuntu
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21' # Quarkus 3.34.1 supports Java 21+ for native. Maven 25 might be too new for stable GraalVM GH Action support in some regions or versions, but let's try to match Java 25 if possible or use a stable one.
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          cache: 'maven'
+
+      - name: Build Native
+        run: ./mvnw install -Dnative -DskipTests -B
+
+      - name: Run Native ITs
+        run: ./mvnw verify -Dnative -Dmaven.test.skip=true -DskipITs=false -B

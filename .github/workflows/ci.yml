@@ -1,6 +1,6 @@
 ## A basic GitHub Actions workflow for your Quarkus application.
 
-name: CI build
+name: CI Build
 
 on:
   push:
@@ -10,7 +10,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
     steps:
       - uses: actions/checkout@v5
 
@@ -21,5 +27,5 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: Build
+      - name: Build and Test
         run: ./mvnw verify -B
