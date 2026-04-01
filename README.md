@@ -6,63 +6,77 @@ Qards is a modern, lightweight flashcard application built with Quarkus and Java
 
 Qards allows users to create decks of flashcards and practice them using a web-based interface. The backend is built with Quarkus, providing a robust and fast API, while the frontend offers a responsive design with interactive elements.
 
-### Cool Features
-- Sleek interactive UI with Tailwind CSS and 3D flip animations
-- Dynamic deck management via REST API
-- In-memory storage for fast access (reset on restart)
-- Randomized learning mode
-- Progress tracking with session statistics
-- Pre-loaded "Webentwicklung" (Web Development) deck
+### Key Features
+- **Interactive UI**: Sleek interface with Tailwind CSS, 3D flip animations, and haptic-like feedback.
+- **Dynamic Deck Management**: Create and manage multiple flashcard decks via REST API.
+- **In-Memory Storage**: Fast access to data (reset on application restart).
+- **Randomized Learning**: Study flashcards in a randomized order.
+- **Progress Tracking**: Session-based statistics per deck to monitor learning progress.
+- **Pre-loaded Content**: Includes a default "Webentwicklung" (Web Development) deck.
+- **Native Support**: Ready for GraalVM native executable compilation.
 
 ## Tech Stack
 
 - **Language**: Java 25
 - **Framework**: [Quarkus](https://quarkus.io/) 3.34.1
-- **API**: JAX-RS (Quarkus REST) with Jackson for JSON processing
+- **API**: Jakarta REST (JAX-RS) with Jackson for JSON processing
 - **Frontend**: HTML5, JavaScript (ES6+), Tailwind CSS (via CDN)
-- **Package Manager**: Maven
+- **Package Manager**: Maven (using `./mvnw` wrapper)
 
 ## Requirements
 
-- Java 25 or higher
-- Maven 3.9+ (or use the included `./mvnw`)
+- **Java**: JDK 25 or higher
+- **Maven**: 3.9+ (optional, as `./mvnw` is included)
+- **GraalVM**: (Optional) For building native executables
 
 ## Setup and Run
 
 ### Development Mode
 Run the application in development mode with live coding enabled:
-```shell
+```powershell
 ./mvnw quarkus:dev
 ```
-The application will be available at [http://localhost:8080](http://localhost:8080).
-The interactive trainer is located at [http://localhost:8080/qards/index.html](http://localhost:8080/qards/index.html).
+- **API Base**: [http://localhost:8080](http://localhost:8080)
+- **Web UI**: [http://localhost:8080/qards/index.html](http://localhost:8080/qards/index.html)
+- **Dev UI**: [http://localhost:8080/qdev](http://localhost:8080/qdev)
 
 ### Production Mode
-1. Package the application:
-   ```shell
+1. **Package the application**:
+   ```powershell
    ./mvnw package
    ```
-2. Run the packaged application:
-   ```shell
+2. **Run the packaged application**:
+   ```powershell
    java -jar target/quarkus-app/quarkus-run.jar
    ```
 
+### Native Executable
+Build a native executable using GraalVM:
+```powershell
+./mvnw package -Dnative
+```
+Run the resulting binary:
+```powershell
+./target/code-with-quarkus-1.0.0-SNAPSHOT-runner
+```
+
 ### Docker
-Multiple Dockerfiles are provided in `src/main/docker/` for different packaging options:
-- `Dockerfile.jvm`: Standard JVM-based image
-- `Dockerfile.native`: Native executable image
-- `Dockerfile.native-micro`: Minimal native image
+Dockerfiles are located in `src/main/docker/`:
+- `Dockerfile.jvm`: Standard JVM-based image.
+- `Dockerfile.native`: Native executable image (requires native build).
+- `Dockerfile.native-micro`: Minimal native image using a micro base.
 
 ## Scripts
 
-- `./mvnw quarkus:dev`: Starts the app in development mode.
-- `./mvnw package`: Packages the application.
+- `./mvnw quarkus:dev`: Starts the app in development mode with hot-reload.
+- `./mvnw package`: Compiles and packages the JAR file.
+- `./mvnw package -Dnative`: Compiles a native binary.
 - `./mvnw test`: Runs unit tests.
-- `./mvnw verify`: Runs integration tests.
+- `./mvnw verify`: Runs integration tests (including native ones if profile is active).
 
 ## API Endpoints
 
-The REST API is available under `/api`.
+The REST API is available under the `/api` path.
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
@@ -70,8 +84,8 @@ The REST API is available under `/api`.
 | `GET` | `/api/decks/{name}/random` | Returns a random flashcard from the specified deck. |
 | `GET` | `/api/decks/{name}/all` | Returns all flashcards from the specified deck. |
 | `POST` | `/api/decks/{name}` | Adds a list of flashcards to the specified deck. |
-| `GET` | `/api/stats` | Retrieves learning statistics (total learned, total correct). |
-| `POST` | `/api/stats` | Updates statistics. Expects `{"wussteIch": true/false}`. |
+| `GET` | `/api/decks/{name}/stats` | Retrieves learning statistics for a specific deck. |
+| `POST` | `/api/decks/{name}/stats` | Updates stats for a card. Payload: `{"cardId": "...", "wussteIch": true}`. |
 | `GET` | `/hello` | Basic health check/greeting endpoint. |
 
 ### Sample Flashcard JSON
@@ -86,27 +100,30 @@ The REST API is available under `/api`.
 
 ## Environment Variables
 
-- `TODO`: Document any specific environment variables if added (e.g., for persistent storage in future). Currently, the app uses in-memory storage.
+- `TODO`: Document specific environment variables if persistent storage or external integrations are added. Currently, configuration is managed in `src/main/resources/application.properties`.
 
 ## Tests
 
-Run the test suite using Maven:
-```shell
+The project uses JUnit 5 and REST Assured for testing.
+```powershell
 ./mvnw test
 ```
-- `GreetingResourceTest`: Unit tests for the greeting endpoint.
-- `GreetingResourceIT`: Integration tests (runs against the packaged application).
+- **Unit Tests**: `QardServiceTest`, `GreetingResourceTest`.
+- **Integration Tests**: `GreetingResourceIT` (tests the packaged application).
 
 ## Project Structure
 
-- `src/main/java/org/acme/Qard.java`: Data model (Java Record).
-- `src/main/java/org/acme/QardService.java`: Service layer handling in-memory storage and statistics.
-- `src/main/java/org/acme/QardResource.java`: REST API endpoints.
-- `src/main/resources/META-INF/resources/qards/`: Frontend assets (HTML, CSS, JS).
-- `src/main/resources/application.properties`: Application configuration (e.g., CORS).
-- `src/main/docker/`: Dockerfiles for various deployment targets.
+- `src/main/java/org/acme/`
+  - `Qard.java`: Data model (Java Record).
+  - `QardService.java`: Business logic and in-memory storage.
+  - `QardResource.java`: REST API implementation.
+- `src/main/resources/`
+  - `META-INF/resources/qards/`: Frontend assets (HTML, JS, CSS).
+  - `application.properties`: Quarkus configuration (CORS, etc.).
+- `src/test/java/org/acme/`: Test suites.
+- `src/main/docker/`: Docker configurations.
 
 ## License
 
-- `TODO`: Add license information.
+- `TODO`: Add license information (e.g., MIT, Apache 2.0).
 
