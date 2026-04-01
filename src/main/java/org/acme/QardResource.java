@@ -7,10 +7,6 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 
-// WICHTIG: Die folgenden zwei Zeilen müssen GELÖSCHT werden!
-// import org.qards.model.Qard;
-// import org.qards.service.QardService;
-
 @Path("/api/decks")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)

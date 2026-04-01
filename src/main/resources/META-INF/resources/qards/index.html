@@ -182,220 +182,85 @@
 
 <!-- --- app.js --- -->
 <script>
-    // Konfiguration
     const API_BASE_URL = '/api/decks';
     let currentActiveDeck = null;
 
-    // --- UI Hilfsfunktionen ---
-
-    // Wechselt zwischen den drei Hauptansichten
     function showView(viewId) {
-        document.getElementById('view-start').classList.add('hidden');
-        document.getElementById('view-quiz').classList.add('hidden');
-        document.getElementById('view-create').classList.add('hidden');
-
+        document.querySelectorAll('main > div').forEach(div => div.classList.add('hidden'));
         document.getElementById(viewId).classList.remove('hidden');
-
-        // Wenn wir auf Start wechseln, laden wir die Decks neu
-        if(viewId === 'view-start') {
-            loadDecks();
-        }
+        if(viewId === 'view-start') loadDecks();
     }
 
-    // Zeigt eine elegante Fehlermeldung oben rechts an (besser als alert)
-    function showError(message) {
-        const errorDiv = document.getElementById('error-message');
-        document.getElementById('error-text').innerText = message;
-        errorDiv.classList.remove('hidden');
-        setTimeout(() => {
-            errorDiv.classList.add('hidden');
-        }, 4000);
-    }
-
-    // --- Startbildschirm Logik ---
-
-    // GET: Lädt alle Deck-Namen vom Quarkus-Backend
     async function loadDecks() {
         const container = document.getElementById('decks-container');
-        container.innerHTML = '<p class="text-slate-400 text-sm italic col-span-full">Lade Decks...</p>';
-
         try {
             const response = await fetch(API_BASE_URL);
-            if (!response.ok) throw new Error('Netzwerk-Antwort war nicht ok');
-
             const decks = await response.json();
-
-            container.innerHTML = ''; // Lade-Text entfernen
-
-            if(decks.length === 0) {
-                container.innerHTML = '<p class="text-slate-500 col-span-full">Noch keine Decks vorhanden. Erstelle dein erstes!</p>';
-                return;
-            }
-
-            // Generiere Buttons für jedes Deck
-            decks.forEach(deckName => {
+            container.innerHTML = '';
+            decks.forEach(name => {
                 const btn = document.createElement('button');
-                btn.className = 'bg-white hover:bg-slate-50 border border-slate-200 text-left p-5 rounded-xl shadow-sm transition-all hover:shadow-md flex justify-between items-center group';
-                btn.innerHTML = `
-                        <span class="font-semibold text-slate-700 group-hover:text-blue-600 transition-colors">${deckName}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-300 group-hover:text-blue-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
-                    `;
-                // Bei Klick: Setze aktuelles Deck, wechsle View und lade erste Karte
+                btn.className = 'bg-white p-5 rounded-xl border border-slate-200 hover:shadow-md text-left';
+                btn.innerHTML = `<span class="font-semibold">${name}</span>`;
                 btn.onclick = () => {
-                    currentActiveDeck = deckName;
-                    document.getElementById('current-deck-title').innerText = deckName;
+                    currentActiveDeck = name;
+                    document.getElementById('current-deck-title').innerText = name;
                     showView('view-quiz');
                     loadRandomCard();
                 };
                 container.appendChild(btn);
             });
-
-        } catch (error) {
-            console.error("Fehler beim Laden der Decks:", error);
-            container.innerHTML = '<p class="text-red-500 text-sm col-span-full">Fehler beim Verbinden mit http://localhost:8080. Läuft das Quarkus-Backend?</p>';
-        }
+        } catch (e) { console.error("Load failed", e); }
     }
 
-    // --- Quiz-Modus Logik ---
-
-    // CSS-Klasse toggeln, um die 3D-Drehung auszulösen
-    function flipCard() {
-        document.getElementById('flashcard').classList.toggle('flipped');
-    }
-
-    // GET: Lädt genau eine zufällige Karte aus dem gewählten Deck
     async function loadRandomCard() {
         if (!currentActiveDeck) return;
-
-        const qElement = document.getElementById('card-question');
-        const aElement = document.getElementById('card-answer');
-        const flashcard = document.getElementById('flashcard');
-
-        // Stelle sicher, dass wir die Vorderseite sehen, bevor die neue Karte lädt
-        flashcard.classList.remove('flipped');
-
-        // Kurzes visuelles Feedback beim Laden
-        qElement.innerText = "Lade Karte...";
-        qElement.classList.add('opacity-50');
-
-        // Timeout simuliert, damit die CSS-Dreh-Animation der Rückseite Zeit hat abzuschließen (falls sie noch gedreht war)
-        setTimeout(async () => {
-            try {
-                const response = await fetch(`${API_BASE_URL}/${currentActiveDeck}/random`);
-                if (!response.ok) {
-                    throw new Error('Deck nicht gefunden');
-                }
-
-                const card = await response.json();
-
-                qElement.innerText = card.question;
-                aElement.innerText = card.answer;
-                qElement.classList.remove('opacity-50');
-            } catch (error) {
-                console.error("Fehler beim Laden der Karte:", error);
-                qElement.innerText = "Fehler beim Laden.";
-                qElement.classList.remove('opacity-50');
-                showError("Konnte keine Karte aus diesem Deck laden.");
-            }
-        }, 300); // 300ms warten
+        try {
+            const res = await fetch(`${API_BASE_URL}/${encodeURIComponent(currentActiveDeck)}/random`);
+            const card = await res.json();
+            document.getElementById('card-question').innerText = card.question;
+            document.getElementById('card-answer').innerText = card.answer;
+            document.getElementById('flashcard').classList.remove('flipped');
+        } catch (e) { console.error("Card failed", e); }
     }
 
-    // --- Erstell-Ansicht Logik ---
-
-    // Fügt dem DOM ein neues Formular-Feld für ein Frage/Antwort-Paar hinzu
     function addQaField() {
-        const container = document.getElementById('qa-container');
-        const index = container.children.length + 1;
-
         const div = document.createElement('div');
-        div.className = 'qa-pair bg-slate-50 p-4 rounded-xl border border-slate-200 relative';
+        div.className = 'qa-pair bg-slate-50 p-4 rounded-xl border mb-2';
         div.innerHTML = `
-                <div class="absolute top-2 right-3 text-xs font-bold text-slate-300">#${index}</div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">Frage</label>
-                        <input type="text" class="input-q w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" placeholder="z.B. Was ist HTML?">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">Antwort</label>
-                        <input type="text" class="input-a w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" placeholder="z.B. HyperText Markup Language">
-                    </div>
-                </div>
-            `;
-        container.appendChild(div);
+            <input type="text" class="input-q w-full mb-2 p-2 border rounded" placeholder="Frage">
+            <input type="text" class="input-a w-full p-2 border rounded" placeholder="Antwort">`;
+        document.getElementById('qa-container').appendChild(div);
     }
 
-    // POST: Sendet das neue Deck an das Quarkus-Backend
-        const rawDeckName = document.getElementById('input-deck-name').value.trim();
+    async function saveDeck() {
+        const name = document.getElementById('input-deck-name').value.trim();
+        if (!name) return alert("Name fehlt");
 
-        if (!rawDeckName) {
-            showError("Bitte gib dem Deck einen Namen.");
-            return;
-        }
-
-        // Erlaube nur Buchstaben, Zahlen, Bindestrich und Unterstrich im Deck-Namen
-        const deckNamePattern = /^[A-Za-z0-9_-]+$/;
-        if (!deckNamePattern.test(rawDeckName)) {
-            showError("Ungültiger Deck-Name. Bitte nur Buchstaben, Zahlen, Bindestrich und Unterstrich verwenden.");
-            return;
-        }
-
-        const deckName = rawDeckName;        }
-
-        const qaPairs = document.querySelectorAll('.qa-pair');
-        const newCards = [];
-
-        // Alle Eingabefelder auslesen und zusammenbauen
-        qaPairs.forEach(pair => {
-            const q = pair.querySelector('.input-q').value.trim();
-            const a = pair.querySelector('.input-a').value.trim();
-
-            // Wir nehmen nur Paare, bei denen beide Felder ausgefüllt sind
-            if (q && a) {
-                newCards.push({
-                    deckName: deckName, // Entspricht dem Feld in deinem Java-Record
-                    question: q,
-                    answer: a
-                });
-            }
+        const cards = [];
+        document.querySelectorAll('.qa-pair').forEach(p => {
+            const q = p.querySelector('.input-q').value.trim();
+            const a = p.querySelector('.input-a').value.trim();
+            if(q && a) cards.push({ deckName: name, question: q, answer: a });
         });
 
-        if (newCards.length === 0) {
-            showError("Bitte fülle mindestens ein komplettes Frage/Antwort-Paar aus.");
-            return;
-        }
+        const res = await fetch(`${API_BASE_URL}/${encodeURIComponent(name)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cards)
+        });
 
-        try {
-            // Sende Daten als JSON-Array an /api/decks/{deckName}
-            const response = await fetch(`${API_BASE_URL}/${encodeURIComponent(deckName)}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newCards)
-            });
-
-            if (response.ok) {
-                // Erfolgreich! Formular zurücksetzen und zur Startseite wechseln
-                document.getElementById('input-deck-name').value = '';
-                document.getElementById('qa-container').innerHTML = '';
-                addQaField(); // Ein leeres Feld vorbereiten
-                showView('view-start'); // loadDecks() wird hierbei automatisch aufgerufen
-            } else {
-                showError("Backend hat einen Fehler gemeldet (Status " + response.status + ").");
-            }
-        } catch (error) {
-            console.error("Speicherfehler:", error);
-            showError("Fehler beim Speichern. Läuft dein Backend auf http://localhost:8080?");
+        if(res.ok) {
+            document.getElementById('input-deck-name').value = '';
+            document.getElementById('qa-container').innerHTML = '';
+            addQaField();
+            showView('view-start');
         }
     }
 
-    // --- Initialisierung beim Start ---
-    // Wenn die Seite geladen wird, generiere direkt ein leeres Formular-Feld für später
-    addQaField();
-    // Lade die initialen Decks vom Backend (z.B. dein 'Webentwicklung' Standard-Deck)
-    loadDecks();
+    function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
 
+    addQaField();
+    loadDecks();
 </script>
 </body>
 </html>
