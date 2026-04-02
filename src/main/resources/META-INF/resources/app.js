@@ -24,10 +24,10 @@ function initTheme() {
 function applyTheme(theme) {
     if (theme === 'enterprise') {
         document.body.classList.add('theme-enterprise');
-        document.getElementById('theme-toggle-text').innerText = 'Playful Edition';
+        document.getElementById('theme-toggle-text').innerText = 'Enterprise Edition';
     } else {
         document.body.classList.remove('theme-enterprise');
-        document.getElementById('theme-toggle-text').innerText = 'Enterprise Edition';
+        document.getElementById('theme-toggle-text').innerText = 'Playful Edition';
     }
     localStorage.setItem('qards_theme', theme);
 }
