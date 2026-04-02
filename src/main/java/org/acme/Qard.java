@@ -1,4 +1,4 @@
-package org.acme; // <-- Wichtig: Hier org.acme eintragen!
+package org.acme;
 
 import java.util.UUID;
 
