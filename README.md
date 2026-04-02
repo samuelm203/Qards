@@ -28,6 +28,7 @@ Qards allows users to create decks of flashcards and practice them using a web-b
 - **Java**: JDK 25 or higher
 - **Maven**: 3.9+ (optional, as `./mvnw` is included)
 - **GraalVM**: (Optional) For building native executables
+- **Docker**: (Optional) For containerized deployment
 
 ## Setup and Run
 
@@ -63,6 +64,7 @@ Run the resulting binary:
 ### Docker
 Dockerfiles are located in `src/main/docker/`:
 - `Dockerfile.jvm`: Standard JVM-based image.
+- `Dockerfile.legacy-jar`: Legacy JAR packaging support.
 - `Dockerfile.native`: Native executable image (requires native build).
 - `Dockerfile.native-micro`: Minimal native image using a micro base.
 
@@ -86,7 +88,6 @@ The REST API is available under the `/api` path.
 | `POST` | `/api/decks/{name}` | Adds a list of flashcards to the specified deck. |
 | `GET` | `/api/decks/{name}/stats` | Retrieves learning statistics for a specific deck. |
 | `POST` | `/api/decks/{name}/stats` | Updates stats for a card. Payload: `{"cardId": "...", "wussteIch": true}`. |
-| `GET` | `/hello` | Basic health check/greeting endpoint. |
 
 ### Sample Flashcard JSON
 ```json
@@ -108,18 +109,18 @@ The project uses JUnit 5 and REST Assured for testing.
 ```powershell
 ./mvnw test
 ```
-- **Unit Tests**: `QardServiceTest`, `GreetingResourceTest`.
-- **Integration Tests**: `GreetingResourceIT` (tests the packaged application).
+- **Unit/Resource Tests**: `QardServiceTest`.
+- `TODO`: Add more comprehensive integration tests.
 
 ## Project Structure
 
 - `src/main/java/org/acme/`
   - `Qard.java`: Data model (Java Record).
   - `QardService.java`: Business logic and in-memory storage.
-  - `QardResource.java`: REST API implementation.
+  - `QardResource.java`: REST API implementation (Entry Point).
 - `src/main/resources/`
-  - `META-INF/resources/qards/`: Frontend assets (HTML, JS, CSS).
-  - `application.properties`: Quarkus configuration (CORS, etc.).
+  - `META-INF/resources/`: Frontend assets (HTML, JS, CSS).
+  - `application.properties`: Quarkus configuration.
 - `src/test/java/org/acme/`: Test suites.
 - `src/main/docker/`: Docker configurations.
 
