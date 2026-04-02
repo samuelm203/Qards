@@ -92,4 +92,19 @@ class QardResourceTest {
                 .then()
                 .statusCode(404);
     }
+
+    @Test
+    void testInvalidDeckNameLength() {
+        String longDeckName = "ThisDeckNameIsWayTooLong";
+        List<Qard> qards = List.of(new Qard(null, longDeckName, "Q", "A"));
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(qards)
+                .when()
+                .post("/api/decks/" + longDeckName)
+                .then()
+                .statusCode(400)
+                .body("error", containsString("15 Zeichen"));
+    }
 }

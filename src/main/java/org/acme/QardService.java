@@ -14,7 +14,7 @@ public class QardService {
     // Thread-sicherer In-Memory Cache für die Karten
     private final Map<String, List<Qard>> cache = new ConcurrentHashMap<>();
 
-    // Explizite Deck-Reihenfolge, damit neue Decks immer hinten angehängt werden
+    // Explizite Deck-Reihenfolge, damit neue Decks immer vorne erscheinen
     private final Set<String> deckOrder = Collections.synchronizedSet(new LinkedHashSet<>());
 
     // Separater Thread-sicherer Cache für die Statistiken jedes Decks
@@ -37,14 +37,19 @@ public class QardService {
 
     public void addQards(String deckName, List<Qard> newQards) {
         cache.computeIfAbsent(deckName, k -> new ArrayList<>()).addAll(newQards);
-        deckOrder.add(deckName);
+        synchronized (deckOrder) {
+            deckOrder.remove(deckName); // Falls vorhanden, entfernen...
+            deckOrder.add(deckName);    // ...und neu hinzufügen, damit es ans Ende des LinkedHashSet rückt
+        }
         // Stelle sicher, dass beim Anlegen eines neuen Decks auch die Statistik initialisiert wird
         statsCache.putIfAbsent(deckName, new DeckStats());
     }
 
     public List<String> getAllDeckNames() {
         synchronized (deckOrder) {
-            return new ArrayList<String>(deckOrder);
+            List<String> names = new ArrayList<>(deckOrder);
+            Collections.reverse(names); // Neueste zuerst
+            return names;
         }
     }
 

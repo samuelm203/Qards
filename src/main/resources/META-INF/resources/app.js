@@ -71,8 +71,43 @@ function showExplorer() {
 }
 
 async function handleCsvUpload(file) {
-    // TODO CSV-Parsing und Upload an Backend
-    showError("CSV-Import noch nicht implementiert.");
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        try {
+            const csv = e.target.result;
+            const lines = csv.split('\n').filter(line => line.trim());
+            const cards = [];
+
+            for (const line of lines) {
+                const [question, answer] = line.split(',').map(s => s.trim());
+                if (question && answer) {
+                    cards.push({ question, answer });
+                }
+            }
+
+            if (cards.length === 0) return showError("Keine gültigen Inhalte in CSV gefunden.");
+
+            let deckName = file.name.replace('.csv', '').trim();
+            if (deckName.length > 15) {
+                deckName = deckName.substring(0, 15);
+            }
+            const res = await fetch(`${API_BASE_URL}/decks/${encodeURIComponent(deckName)}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(cards.map(c => ({ ...c, deckName })))
+            });
+
+            if (res.ok) {
+                showView('view-start');
+                loadDashboard();
+            } else {
+                showError("CSV-Import fehlgeschlagen.");
+            }
+        } catch (e) {
+            showError("Fehler beim Verarbeiten der CSV-Datei.");
+        }
+    };
+    reader.readAsText(file);
 }
 
 function showError(message) {
@@ -253,6 +288,7 @@ function addQaField() {
 async function saveDeck() {
     const name = document.getElementById('input-deck-name').value.trim();
     if (!name) return showError("Set-Bezeichnung erforderlich.");
+    if (name.length > 15) return showError("Name darf max. 15 Zeichen lang sein.");
 
     const cards = [];
     document.querySelectorAll('.qa-pair').forEach(pair => {

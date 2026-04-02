@@ -22,6 +22,11 @@ public class QardResource {
     @POST
     @Path("/decks/{deckName}")
     public Response createQards(@PathParam("deckName") String deckName, List<Qard> qards) {
+        if (deckName == null || deckName.isBlank() || deckName.length() > 15) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\": \"Deck-Name muss zwischen 1 und 15 Zeichen lang sein.\"}")
+                    .build();
+        }
         if (qards == null || qards.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"error\": \"Die übergebene Karten-Liste darf nicht leer sein.\"}")

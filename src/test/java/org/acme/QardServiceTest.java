@@ -47,13 +47,13 @@ class QardServiceTest {
     }
 
     @Test
-    void newDeckIsAppendedToTheEnd() {
+    void newestDeckIsAtTheBeginning() {
         String newDeck = "OrderDeck";
         qardService.addQards(newDeck, List.of(new Qard("3", newDeck, "Q3", "A3")));
 
         List<String> decks = qardService.getAllDeckNames();
 
-        assertEquals(newDeck, decks.get(decks.size() - 1), "Neue Decks sollten immer am Ende erscheinen");
+        assertEquals(newDeck, decks.get(0), "Neue Decks sollten immer am Anfang erscheinen");
         assertTrue(decks.contains("Webentwicklung"), "Das Standard-Deck sollte weiterhin vorhanden sein");
     }
 }
