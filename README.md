@@ -125,8 +125,3 @@ The project uses JUnit 5 and REST Assured for testing.
   - `application.properties`: Quarkus configuration.
 - `src/test/java/org/acme/`: Test suites.
 - `src/main/docker/`: Docker configurations.
-
-## License
-
-- `TODO`: Add license information (e.g., MIT, Apache 2.0).
-
