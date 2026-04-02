@@ -62,6 +62,19 @@ function showView(viewId) {
     if(viewId === 'view-start') loadDashboard();
 }
 
+function showExplorer() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv';
+    input.onchange = (e) => handleCsvUpload(e.target.files[0]);
+    input.click();
+}
+
+async function handleCsvUpload(file) {
+    // TODO CSV-Parsing und Upload an Backend
+    showError("CSV-Import noch nicht implementiert.");
+}
+
 function showError(message) {
     const errorDiv = document.getElementById('error-message');
     document.getElementById('error-text').innerText = message;
@@ -106,7 +119,7 @@ async function loadDashboard() {
     }
 }
 
-// --- NEU: Deck-spezifisches Dashboard ---
+// --- Deck-spezifisches Dashboard ---
 async function openDeckDashboard(deckName) {
     currentActiveDeck = deckName;
     document.getElementById('dashboard-deck-title').innerText = deckName;

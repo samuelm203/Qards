@@ -19,7 +19,7 @@ public class QardService {
     // Explizite Deck-Reihenfolge, damit neue Decks immer hinten angehängt werden
     private final Set<String> deckOrder = Collections.synchronizedSet(new LinkedHashSet<>());
 
-    // NEU: Separater Thread-sicherer Cache für die Statistiken jedes Decks
+    // Separater Thread-sicherer Cache für die Statistiken jedes Decks
     private final Map<String, DeckStats> statsCache = new ConcurrentHashMap<>();
 
     private final Random random = new Random();
@@ -46,9 +46,7 @@ public class QardService {
 
     public List<String> getAllDeckNames() {
         synchronized (deckOrder) {
-            List<String> list = new ArrayList<String>(deckOrder);
-            Collections.reverse(list);
-            return list;
+            return new ArrayList<String>(deckOrder);
         }
     }
 
@@ -65,7 +63,7 @@ public class QardService {
         return cache.getOrDefault(deckName, new ArrayList<>());
     }
 
-    // --- ANGEPASSTE FUNKTIONEN: Statistiken pro Deck ---
+    // --- Statistiken pro Deck ---
 
     /**
      * Aktualisiert die Lern-Statistiken für ein spezifisches Deck.
