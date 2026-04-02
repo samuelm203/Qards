@@ -3,18 +3,21 @@ package org.acme;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.Collections.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static java.util.Collections.reverse;
 
 @ApplicationScoped
 public class QardService {
 
     // Thread-sicherer In-Memory Cache für die Karten
     private final Map<String, List<Qard>> cache = new ConcurrentHashMap<>();
+
+    // Explizite Deck-Reihenfolge, damit neue Decks immer hinten angehängt werden
+    private final Set<String> deckOrder = Collections.synchronizedSet(new LinkedHashSet<>());
 
     // NEU: Separater Thread-sicherer Cache für die Statistiken jedes Decks
     private final Map<String, DeckStats> statsCache = new ConcurrentHashMap<>();
@@ -30,17 +33,23 @@ public class QardService {
                 new Qard(null, deckName, "Was ist das DOM?", "Document Object Model – eine Schnittstelle, um HTML-Strukturen mit Programmiersprachen wie JavaScript zu verändern.")
         );
         cache.put(deckName, new ArrayList<>(initialQards));
+        deckOrder.add(deckName);
         statsCache.put(deckName, new DeckStats()); // Initialisiere leere Stats für das Standard-Deck
     }
 
     public void addQards(String deckName, List<Qard> newQards) {
         cache.computeIfAbsent(deckName, k -> new ArrayList<>()).addAll(newQards);
+        deckOrder.add(deckName);
         // Stelle sicher, dass beim Anlegen eines neuen Decks auch die Statistik initialisiert wird
         statsCache.putIfAbsent(deckName, new DeckStats());
     }
 
     public List<String> getAllDeckNames() {
-        return new ArrayList<>(cache.keySet());
+        synchronized (deckOrder) {
+            List<String> list = new ArrayList<String>(deckOrder);
+            Collections.reverse(list);
+            return list;
+        }
     }
 
     public Qard getRandomQard(String deckName) {

@@ -8,6 +8,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 class QardServiceTest {
@@ -43,5 +44,16 @@ class QardServiceTest {
         assertEquals(50, Math.round((double)stats.totalCorrect() / stats.totalLearned() * 100), "Die Quote sollte nun 50% sein (1 von 2)");
         assertEquals(4, stats.totalAnswers(), "Gesamt-Antworten sollten 4 sein");
         assertEquals(3, stats.totalCorrectAnswers(), "Gesamt-Richtig-Antworten sollten 3 sein (True, True, False, True)");
+    }
+
+    @Test
+    void newDeckIsAppendedToTheEnd() {
+        String newDeck = "OrderDeck";
+        qardService.addQards(newDeck, List.of(new Qard("3", newDeck, "Q3", "A3")));
+
+        List<String> decks = qardService.getAllDeckNames();
+
+        assertEquals(newDeck, decks.get(decks.size() - 1), "Neue Decks sollten immer am Ende erscheinen");
+        assertTrue(decks.contains("Webentwicklung"), "Das Standard-Deck sollte weiterhin vorhanden sein");
     }
 }
