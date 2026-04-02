@@ -80,7 +80,6 @@ public class QardResource {
                     .entity("{\"error\": \"Deck '" + deckName + "' wurde nicht gefunden.\"}")
                     .build();
         }
-
         qardService.updateStats(deckName, request.cardId(), request.wussteIch());
 
         // HTTP 200 OK (Erfolg reicht, wir senden keinen Body zurück)
