@@ -38,8 +38,8 @@ Run the application in development mode with live coding enabled:
 ./mvnw quarkus:dev
 ```
 - **API Base**: [http://localhost:8080](http://localhost:8080)
-- **Web UI**: [http://localhost:8080/qards/index.html](http://localhost:8080/qards/index.html)
-- **Dev UI**: [http://localhost:8080/qdev](http://localhost:8080/qdev)
+- **Web UI**: [http://localhost:8080/](http://localhost:8080/) (serves `index.html` from `META-INF/resources`)
+- **Dev UI**: [http://localhost:8080/q/dev](http://localhost:8080/q/dev)
 
 ### Production Mode
 1. **Package the application**:
@@ -101,7 +101,9 @@ The REST API is available under the `/api` path.
 
 ## Environment Variables
 
-- `TODO`: Document specific environment variables if persistent storage or external integrations are added. Currently, configuration is managed in `src/main/resources/application.properties`.
+- `QUARKUS_HTTP_PORT`: Port on which the application listens (default: `8080`).
+- `QUARKUS_HTTP_CORS`: Enable/disable CORS (currently `true` in `application.properties`).
+- `TODO`: Document additional environment variables if persistent storage (e.g., PostgreSQL, Redis) is integrated.
 
 ## Tests
 
@@ -109,8 +111,8 @@ The project uses JUnit 5 and REST Assured for testing.
 ```powershell
 ./mvnw test
 ```
-- **Unit/Resource Tests**: `QardServiceTest`.
-- `TODO`: Add more comprehensive integration tests.
+- **Unit/Resource Tests**: `QardServiceTest`, `QardResourceTest`.
+- **Integration Tests**: `QardResourceIT` (if generated during native build).
 
 ## Project Structure
 
